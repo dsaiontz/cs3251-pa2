@@ -5,25 +5,38 @@ import re
   
 def Main(): 
 
-    #setting for client, either upload or download
-    setting = sys.argv[1]
-
-    #host for socket
-    host = str(sys.argv[2])
-
-    #Define the port on which you want to connect 
-    port = int(sys.argv[3])
-    if port < 0 or port > 65535:
-        print('ERROR port invalid, must be between 0 and 65535')
+    if len(sys.argv) != 4:
+        print('error: args should contain <ServerIP> <ServerPort> <Username>')
         return
 
-    message = ''
+    #host for socket
+    host = sys.argv[1]
+    ipParts = host.split('.')
+    if len(ipParts) != 4:
+        print('error: server ip invalid, connection refused.')
+        return
+    for x in ipParts:
+        if not x.isdecimal():
+            print('error: server ip invalid, connection refused.')
+            return
+        y = int(x)
+        if y < 0 or y > 255:
+            print('error: server ip invalid, connection refused.')
+            return
+    
+    #port for socket
+    port = str(sys.argv[2])
 
-    if setting == '-u':
-        #message provided by client
-        message = sys.argv[4]
-        #how to escape $'s found at https://stackoverflow.com/questions/18935754/how-to-escape-special-characters-of-a-string-with-single-backslashes
-        message = message.translate(str.maketrans({"$":  r"\$", "#": r"\#"}))
+    #Define the port on which you want to connect 
+    if port < 0 or port > 65535:
+        print('error: server port invalid, connection refused.')
+        return
+
+    username = sys.argv[4]
+    if not username.isalnum():
+        print('error: username has wrong format, connection refused.')
+        return
+
     
     #create a socket
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
