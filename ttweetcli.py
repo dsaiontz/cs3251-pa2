@@ -36,7 +36,6 @@ def Main():
     if not username.isalnum():
         print('error: username has wrong format, connection refused.')
         return
-
     
     #create a socket
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
@@ -45,10 +44,20 @@ def Main():
     try:
         s.connect((host, port))
     except:
-        print('ERROR Server Not Found')
+        print('error: server not found.')
+        return
+    
+    s.sendall(('username = ' + username).encode())
+    data = s.recv(512).decode()
+    if data.equals('username illegal, connection refused.'):
+        print(data)
+        return
+    
+    if data.equals(''):
+        print('error: server unable to be reached')
         return
 
-    #if in download mode, message will always be length 0.
+    #NOTE: PORTIONS OF THIS SECTION CAN BE USED FOR TWEET OPERATION
     if(len(message) <= 150):
         #receive current message if any is available
         if setting == '-d':
