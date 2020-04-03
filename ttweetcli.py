@@ -57,6 +57,17 @@ def Main():
         print('error: server unable to be reached')
         return
 
+    if data.equals('username legal, connection established.'):
+        print(data)
+    else:
+        print('error: unknown error')
+        return
+        
+    while True:
+        command = input('Command: ')
+
+    #old, unaltered code begins here
+
     #NOTE: PORTIONS OF THIS SECTION CAN BE USED FOR TWEET OPERATION
     if(len(message) <= 150):
         #receive current message if any is available
