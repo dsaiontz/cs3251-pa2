@@ -66,6 +66,33 @@ def Main():
     while True:
         command = input('Command: ')
 
+        if len(command) > 5 and command[0, 5].equals('tweet'):
+            if len(command) < 7:
+                print('message length illegal, connection refused.')
+            messageAndHashTag = command[7:]
+            if messageAndHashTag.find('"') == messageAndHashTag.rfind('"'):
+                print('hashtag illegal format, connection refused.')
+            else:
+                message = messageAndHashTag[0:messageAndHashTag.find('"')]
+                if len(message) > 150 or len(message) < 0:
+                    print('message length illegal, connection refused.')
+                else:
+                    hashTags = messageAndHashTag[:messageAndHashTag.find('"') + 2]
+                    if len(hashTags) == 0 or hashTags.find('##') > -1 or hashTags.count('#') > 5 or hashTags.find('#ALL') > -1:
+                        print('hashtag illegal format, connection refused.')
+                    else:
+                        lastIndex = 0
+                        curHashTagsLeft = hashTags
+                        while lastIndex != hashTags.rfind('#'):
+                            if curHashTagsLeft[1:].find('#') > 15:
+                                print('hashtag illegal format, connection refused.')
+                            else:
+                                curHashTagsLeft = curHashTagsLeft[curHashTagsLeft[1:].find('#'):]
+                        if len(curHashTagsLeft) > 15:
+                            print('hashtag illegal format, connection refused.')
+                        else:
+                            s.sendall(command.encode())
+
     #old, unaltered code begins here
 
     #NOTE: PORTIONS OF THIS SECTION CAN BE USED FOR TWEET OPERATION
