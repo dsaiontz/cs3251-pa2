@@ -64,7 +64,13 @@ def Main():
         return
         
     while True:
-        command = input('Command: ')
+        response = s.recv(512).decode()
+        if response.equals('Goodbye!'):
+            print(response)
+            return
+        while not response.equals('Ready'):
+            response = s.recv(512).decode()
+        command = input('User command: ')
 
         if len(command) > 5 and command[0, 5].equals('tweet'):
             if len(command) < 7:
