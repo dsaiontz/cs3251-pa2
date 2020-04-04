@@ -104,6 +104,11 @@ def Main():
                 print('hashtag illegal format, connection refused.')
                 continue
             s.sendall(command.encode())
+        
+        if len(command) > 9 and command[0, 9].equals('subscribe'):
+            if len(command) < 11:
+                print('hashtag illegal format, connection refused.')
+                continue
 
     #old, unaltered code begins here
 
