@@ -150,46 +150,6 @@ def Main():
         if command.equals('exit'):
             s.sendall(command)
 
-    #old, unaltered code begins here
-
-    #NOTE: PORTIONS OF THIS SECTION CAN BE USED FOR TWEET OPERATION
-    if(len(message) <= 150):
-        #receive current message if any is available
-        if setting == '-d':
-            #send to server that client wishes to download current saved message
-            s.sendall('download'.encode())
-            #receive saved message
-            data = s.recv(256).decode() #make sure enough space for 150 character message
-            #check that message received is not that there is no message
-            if data != 'no message stored':
-                print('output: \"' + data + '\"')
-            else:
-                print('output: \"\"')
-    
-        elif setting == '-u':
-            #send to server that client wishes to upload a new message
-            s.sendall('upload'.encode())
-            data = s.recv(256).decode()
-            #verify that server is ready to receive the message
-            if data == 'ready':
-                #send the message to server
-                s.sendall(message.encode())
-                #check that server saved the message successfully
-                data = s.recv(256).decode()
-                if data == 'ok':
-                    print('upload successful')
-                else:
-                    print('ERROR message unable to be saved: ' + data)
-            #if the server for some reason was unable to process an upload request
-            else:
-                print('ERROR message not able to be sent to server')
-        #if any other command in terminal, notify user that arg not valid
-        else:
-            print('ERROR Command not valid, use either -u or -d')
-    #message is greater than 150 characters, return an error
-    else:
-        print('ERROR message length > 150')
-
 if __name__ == '__main__': 
     Main() 
 
