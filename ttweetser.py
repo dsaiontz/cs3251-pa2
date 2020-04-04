@@ -8,10 +8,12 @@ import sys
 
 lock = threading.Lock()
 
-#key: username, value: ([tweets], connectionSocket, addr)
+#key: username, value: ([tweets sent], connectionSocket, addr,
+#                       {tweets received: (sender username, tweet, origin hashtag)})
 users = {}
 #key: hashtag, value: [usernames]
 hashtags = {}
+
 
 
 #port number for server
@@ -62,6 +64,10 @@ def threaded_client(connection, user):
             for user in hashtags[user]:
                connectionS = users[user][1] #connection of that user
                connectionS.sendall(tweetContent)
+               users[username]
+
+
+
 
 
 
@@ -82,15 +88,21 @@ def threaded_client(connection, user):
 
 
       #unsubscribe command
-   elif received[0:11] == 'unsubscribe':
-      tag = received[12:]
-      if tag == '#ALL':
-         for htag in hashtags.keys():
-            if username in hashtags[htag]:
-               hashtags[htag].remove(username)
-      else:
-         if tag in hashtags.keys():
-            hashtags[tag].remove(username)
+      elif received[0:11] == 'unsubscribe':
+         tag = received[12:]
+         if tag == '#ALL':
+            for htag in hashtags.keys():
+               if username in hashtags[htag]:
+                  hashtags[htag].remove(username)
+         else:
+            if tag in hashtags.keys():
+               hashtags[tag].remove(username)
+
+
+
+      #timeline command
+      elif received == 'timeline':
+
 
 
 
@@ -116,7 +128,7 @@ while True:
       connectionSocket.sendall('username illegal, connection refused.'.encode())
    else:
       connectionSocket.sendall('username legal, connection established.'.encode())
-      users[data] = ([], connectionSocket, addr)
+      users[data] = ([], connectionSocket, addr {})
 
       ip, port = str(addr[0]), str(addr[1])
       print("connected with " + ip + ":" + port)
