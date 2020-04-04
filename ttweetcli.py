@@ -64,12 +64,13 @@ def Main():
         return
         
     while True:
-        response = s.recv(512).decode()
-        if response.equals('Goodbye!'):
-            print(response)
+        response = s.recvall(512).decode()
+        print(response)
+        if response.equals('bye bye'):
             return
-        while not response.equals('Ready'):
-            response = s.recv(512).decode()
+        while not response.equals('Ready for next input'):
+            response = s.recvall(512).decode()
+            print(response)
         command = input('User command: ')
 
         if len(command) > 5 and command[0, 5].equals('tweet'):
@@ -109,6 +110,45 @@ def Main():
             if len(command) < 11:
                 print('hashtag illegal format, connection refused.')
                 continue
+            hashTag = command[11:]
+            if len(hashTag) == 0 or not hashTag[0].equals('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
+                print('hashtag illegal format, connection refused.')
+                continue
+            if len(hashTag) > 15:
+                print('hashtag illegal format, connection refused.')
+                continue
+            s.sendall(command.encode())
+
+        if len(command) > 11 and command[0, 11].equals('unsubscribe'):
+            if len(command) < 13:
+                print('hashtag illegal format, connection refused.')
+                continue
+            hashTag = command[13:]
+            if len(hashTag) == 0 or not hashTag[0].equals('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
+                print('hashtag illegal format, connection refused.')
+                continue
+            if len(hashTag) > 15:
+                print('hashtag illegal format, connection refused.')
+                continue
+            s.sendall(command.encode())
+
+        if command.equals('timeline'):
+            s.sendall(command.encode())
+        
+        if command.equals('getusers'):
+            s.sendall(command.encode())
+
+        if len(command) > 9 and command[0:9].equals('gettweets'):
+            if len(command < 11):
+                print('error: username has wrong format, connection refused.')
+                continue
+            if not command[11:].isalnum():
+                print('error: username has wrong format, connection refused.')
+                continue
+            s.sendall(command.encode())
+
+        if command.equals('exit'):
+            s.sendall(command)
 
     #old, unaltered code begins here
 
