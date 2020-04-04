@@ -8,8 +8,9 @@ import sys
 
 lock = threading.Lock()
 
-#key: username, value: ([hashtags], [tweets])
+#key: username, value: ([hashtags], [tweets], connectionSocket, addr)
 users = {}
+#key: hashtag, value: [usernames]
 hashtags = {}
 
 
@@ -25,7 +26,42 @@ print('The server is ready to receive')
 s.listen(5)
 
 def threaded_client(connection):
-   connection.send()
+   while True:
+      #receive message from client
+      received = connection.recv(512).decode()
+
+
+      #Tweet command
+      if received[0:5] == "Tweet":   #tweet
+         #supposed to get tweet between quotations
+         tweetContent = received[received.find('"') + 1: received.find('"')]
+         hashtagFull = received[received.find('#'):]
+         hashtags = []
+         currentHashtag = ''
+         i = 0
+         for char in hashtagFull:
+            if char == '#':
+               if len(hashtags) == 0:
+                  currentHashtag = currentHashtag + char
+               else:
+                  hashtags.append(currentHashtag)
+                  currentHashtag = '#'
+               i = i + 1
+            else:
+               currentHashtag = currentHashtag + char
+               if (i == len(hashtagFull) - 1):
+                  hashtags.append(currentHashtag)
+               else:
+                  i = i + 1
+         #process tweet
+         users[]
+
+
+
+
+
+
+   connection.close()
 
 
 
@@ -34,6 +70,8 @@ def threaded_client(connection):
 while True:
 
    #establish connection with client
+   #addr is address bound to socket on other end of connection
+   #connectionSocket is new socket object usable to send and receive data
    connectionSocket, addr = s.accept()
 
    #start a new thread and determine if client wants to upload or download
@@ -44,14 +82,12 @@ while True:
       connectionSocket.sendall('username illegal, connection refused.'.encode())
    else:
       connectionSocket.sendall('username legal, connection established.'.encode())
-      users[data] = []
+      users[data] = ([], [], connectionSocket, addr)
 
-   ip, port = str(addr[0]), str(addr[1])
-   print("connected with " + ip + ":" + port)
+      ip, port = str(addr[0]), str(addr[1])
+      print("connected with " + ip + ":" + port)
 
-   start_new_thread(threaded_client, (connectionSocket, ))
-
-
+      start_new_thread(threaded_client, (connectionSocket, ))
 
 s.close()
 
