@@ -1,9 +1,15 @@
 import socket
 
 from _thread import *
+import threading
 import sys
 
 #current message
+
+lock = threading.Lock()
+
+usernames = {}
+hashtags = {}
 
 def Main():
    host = ""
@@ -14,35 +20,33 @@ def Main():
 
    #create socket and bind it with host and port
    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   serverSocket.bind(('127.0.0.1', port))
+   serverSocket.bind(('', port))
 
    #put the socket into listening mode
-   s.listen(1)
+   s.listen(5)
+   print('The server is ready to receive')
 
    #a forever loop until client wants to exit
    while True:
 
       #establish connection with client
-      conn, addr = s.accept()
+      connectionSocket, addr = s.accept()
+
       #start a new thread and determine if client wants to upload or download
-      data = conn.recv(256).decode()
-      if data == 'download':
-         #check that message is instantiated (defensive coding, make sure there is a valid string)
-         if message != None:
-            conn.sendall(message.encode())
-         else:
-         #otherwise, send an empty message
-            conn.sendall(''.encode())
-      elif data == 'upload':
-         #send to client that server is ready to receive new message
-         conn.sendall('ready'.encode())
-         data = conn.recv(256).decode()
-         #check message for length
-         if len(data) > 150:
-            conn.sendall('message >150 characters'.encode())
-         message = data
-         #send to client that message was successfully saved
-         conn.sendall('ok'.encode())
+      data = connectionSocket.recv(256).decode()
+
+      #if username exists
+      if data in usernames:
+         connectionSocket.sendall('username illegal, connection refused.'.encode())
+      else:
+         connectionSocket.sendall('username legal, connection established.'.encode())
+
+
+
+
+
+
+
       #close connection to client regardless
       conn.close()
    s.close()

@@ -1,9 +1,9 @@
-#import socket module 
-import socket 
+#import socket module
+import socket
 import sys
 import re
-  
-def Main(): 
+
+def Main():
 
     if len(sys.argv) != 4:
         print('error: args should contain <ServerIP> <ServerPort> <Username>')
@@ -23,11 +23,11 @@ def Main():
         if y < 0 or y > 255:
             print('error: server ip invalid, connection refused.')
             return
-    
-    #port for socket
-    port = str(sys.argv[2])
 
-    #Define the port on which you want to connect 
+    #port for socket
+    port = int(sys.argv[2]) ######changed str to int
+
+    #Define the port on which you want to connect
     if port < 0 or port > 65535:
         print('error: server port invalid, connection refused.')
         return
@@ -36,23 +36,23 @@ def Main():
     if not username.isalnum():
         print('error: username has wrong format, connection refused.')
         return
-    
+
     #create a socket
-    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
     #attempt to connect to server before checking if length of message is <= 150 characters
     try:
-        s.connect((host, port))
+        s.connect((host, port)) #ip, port
     except:
-        print('error: server not found.')
+        print('error: server not found.')   ########is this correct????
         return
-    
+
     s.sendall(('username = ' + username).encode())
     data = s.recv(512).decode()
     if data.equals('username illegal, connection refused.'):
         print(data)
         return
-    
+
     if data.equals(''):
         print('error: server unable to be reached')
         return
@@ -62,7 +62,7 @@ def Main():
     else:
         print('error: unknown error')
         return
-        
+
     while True:
         response = s.recvall(512).decode()
         print(response)
@@ -105,7 +105,7 @@ def Main():
                 print('hashtag illegal format, connection refused.')
                 continue
             s.sendall(command.encode())
-        
+
         if len(command) > 9 and command[0, 9].equals('subscribe'):
             if len(command) < 11:
                 print('hashtag illegal format, connection refused.')
@@ -134,7 +134,7 @@ def Main():
 
         if command.equals('timeline'):
             s.sendall(command.encode())
-        
+
         if command.equals('getusers'):
             s.sendall(command.encode())
 
@@ -165,7 +165,7 @@ def Main():
                 print('output: \"' + data + '\"')
             else:
                 print('output: \"\"')
-    
+
         elif setting == '-u':
             #send to server that client wishes to upload a new message
             s.sendall('upload'.encode())
@@ -190,8 +190,8 @@ def Main():
     else:
         print('ERROR message length > 150')
 
-if __name__ == '__main__': 
-    Main() 
+if __name__ == '__main__':
+    Main()
 
 #based on following code from https://pymotw.com/3/socket/tcp.html
 # import socket
@@ -223,7 +223,7 @@ if __name__ == '__main__':
 
 # finally:
 #     print('closing socket')
-#     sock.close() 
+#     sock.close()
 
 #also based on following code found at https://realpython.com/python-sockets/#echo-client
 # import socket
