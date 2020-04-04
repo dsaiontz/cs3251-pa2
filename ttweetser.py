@@ -1,32 +1,29 @@
- 
-#import socket programming library 
-import socket 
-  
-#import thread module 
+import socket
+
 from _thread import *
 import sys
-  
+
 #current message
-  
-def Main(): 
-   host = "" 
+
+def Main():
+   host = ""
    message = ''
 
    #port number for server
-   port = int(sys.argv[1])
+   serverPort = int(sys.argv[1])
 
    #create socket and bind it with host and port
-   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-   s.bind(('127.0.0.1', port))
-  
-   #put the socket into listening mode 
+   serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   serverSocket.bind(('127.0.0.1', port))
+
+   #put the socket into listening mode
    s.listen(1)
-  
-   #a forever loop until client wants to exit 
-   while True: 
-  
-      #establish connection with client 
-      conn, addr = s.accept() 
+
+   #a forever loop until client wants to exit
+   while True:
+
+      #establish connection with client
+      conn, addr = s.accept()
       #start a new thread and determine if client wants to upload or download
       data = conn.recv(256).decode()
       if data == 'download':
@@ -49,9 +46,9 @@ def Main():
       #close connection to client regardless
       conn.close()
    s.close()
-  
-  
-if __name__ == '__main__': 
+
+
+if __name__ == '__main__':
    Main()
 
 #based on following code from https://pymotw.com/3/socket/tcp.html
