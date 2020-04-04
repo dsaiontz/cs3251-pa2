@@ -8,52 +8,56 @@ import sys
 
 lock = threading.Lock()
 
-usernames = {}
+#key: username, value: ([hashtags], [tweets])
+users = {}
 hashtags = {}
 
-def Main():
-   host = ""
-   message = ''
 
-   #port number for server
-   serverPort = int(sys.argv[1])
+#port number for server
+serverPort = int(sys.argv[1])
 
-   #create socket and bind it with host and port
-   serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   serverSocket.bind(('', port))
+#create socket and bind it with host and port
+serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+serverSocket.bind(('', port))
 
-   #put the socket into listening mode
-   s.listen(5)
-   print('The server is ready to receive')
+#put the socket into listening mode
+print('The server is ready to receive')
+s.listen(5)
 
-   #a forever loop until client wants to exit
-   while True:
-
-      #establish connection with client
-      connectionSocket, addr = s.accept()
-
-      #start a new thread and determine if client wants to upload or download
-      data = connectionSocket.recv(256).decode()
-
-      #if username exists
-      if data in usernames:
-         connectionSocket.sendall('username illegal, connection refused.'.encode())
-      else:
-         connectionSocket.sendall('username legal, connection established.'.encode())
+def threaded_client(connection):
+   connection.send()
 
 
 
 
+#a forever loop until client wants to exit
+while True:
+
+   #establish connection with client
+   connectionSocket, addr = s.accept()
+
+   #start a new thread and determine if client wants to upload or download
+   data = connectionSocket.recv(256).decode()
+
+   #if user exists
+   if data in users:
+      connectionSocket.sendall('username illegal, connection refused.'.encode())
+   else:
+      connectionSocket.sendall('username legal, connection established.'.encode())
+      users[data] = []
+
+   ip, port = str(addr[0]), str(addr[1])
+   print("connected with " + ip + ":" + port)
+
+   start_new_thread(threaded_client, (connectionSocket, ))
 
 
 
-      #close connection to client regardless
-      conn.close()
-   s.close()
+s.close()
 
 
-if __name__ == '__main__':
-   Main()
+#if __name__ == '__main__':
+#   Main()
 
 #based on following code from https://pymotw.com/3/socket/tcp.html
 # import socket
