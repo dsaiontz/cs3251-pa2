@@ -8,7 +8,7 @@ import sys
 
 lock = threading.Lock()
 
-#key: username, value: ([hashtags], [tweets], connectionSocket, addr)
+#key: username, value: ([tweets], connectionSocket, addr)
 users = {}
 #key: hashtag, value: [usernames]
 hashtags = {}
@@ -25,38 +25,72 @@ serverSocket.bind(('', port))
 print('The server is ready to receive')
 s.listen(5)
 
-def threaded_client(connection):
+def threaded_client(connection, user):
    while True:
       #receive message from client
       received = connection.recv(512).decode()
 
+      username = user
 
       #Tweet command
       if received[0:5] == "Tweet":   #tweet
          #supposed to get tweet between quotations
          tweetContent = received[received.find('"') + 1: received.find('"')]
          hashtagFull = received[received.find('#'):]
-         hashtags = []
+         hashtagList = []
          currentHashtag = ''
          i = 0
          for char in hashtagFull:
             if char == '#':
-               if len(hashtags) == 0:
+               if len(hashtagList) == 0:
                   currentHashtag = currentHashtag + char
                else:
-                  hashtags.append(currentHashtag)
+                  hashtagList.append(currentHashtag)
                   currentHashtag = '#'
                i = i + 1
             else:
                currentHashtag = currentHashtag + char
                if (i == len(hashtagFull) - 1):
-                  hashtags.append(currentHashtag)
+                  hashtagList.append(currentHashtag)
                else:
                   i = i + 1
          #process tweet
-         users[]
+         users[username][0].append(tweetContent)
+
+         #send tweet to clients subscribed to each mentioned hashtag
+         for tag in hashtagList:
+            for user in hashtags[user]:
+               connectionS = users[user][1] #connection of that user
+               connectionS.sendall(tweetContent)
 
 
+
+      #subscribe command
+      elif received[0:9] == 'subscribe':
+         tag = received[10:]
+         if tag == "#ALL":
+            for htag in hashtags.keys():    #loop through each hashtag
+               if username not in hashtags[htag]:
+                  hashtags[htag].append(username)    #no duplicates
+         else:
+            if tag in hashtags.keys():
+               hashtags[tag].append(username)
+            else:
+               hashtags[tag] = []
+               hashtags[tag].append(username)
+
+
+
+      #unsubscribe command
+   elif received[0:11] == 'unsubscribe':
+      tag = received[12:]
+      if tag == '#ALL':
+         for htag in hashtags.keys():
+            if username in hashtags[htag]:
+               hashtags[htag].remove(username)
+      else:
+         if tag in hashtags.keys():
+            hashtags[tag].remove(username)
 
 
 
@@ -82,12 +116,12 @@ while True:
       connectionSocket.sendall('username illegal, connection refused.'.encode())
    else:
       connectionSocket.sendall('username legal, connection established.'.encode())
-      users[data] = ([], [], connectionSocket, addr)
+      users[data] = ([], connectionSocket, addr)
 
       ip, port = str(addr[0]), str(addr[1])
       print("connected with " + ip + ":" + port)
 
-      start_new_thread(threaded_client, (connectionSocket, ))
+      start_new_thread(threaded_client, (connectionSocket, data)). ###may not be able to have data here
 
 s.close()
 
