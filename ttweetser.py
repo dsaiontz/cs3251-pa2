@@ -1,58 +1,161 @@
- 
-#import socket programming library 
-import socket 
-  
-#import thread module 
+import socket
+
 from _thread import *
+import threading
 import sys
-  
+
 #current message
-  
-def Main(): 
-   host = "" 
-   message = ''
 
-   #port number for server
-   port = int(sys.argv[1])
+lock = threading.Lock()
 
-   #create socket and bind it with host and port
-   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-   s.bind(('127.0.0.1', port))
-  
-   #put the socket into listening mode 
-   s.listen(1)
-  
-   #a forever loop until client wants to exit 
-   while True: 
-  
-      #establish connection with client 
-      conn, addr = s.accept() 
-      #start a new thread and determine if client wants to upload or download
-      data = conn.recv(256).decode()
-      if data == 'download':
-         #check that message is instantiated (defensive coding, make sure there is a valid string)
-         if message != None:
-            conn.sendall(message.encode())
+#key: username, value: ([tweets sent], connectionSocket, addr,
+#                       {tweets received: (sender username, tweet, origin hashtag)})
+users = {}
+#key: hashtag, value: [usernames]
+hashtags = {}
+
+
+
+#port number for server
+serverPort = int(sys.argv[1])
+
+#create socket and bind it with host and port
+serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+serverSocket.bind(('', port))
+
+#put the socket into listening mode
+print('The server is ready to receive')
+s.listen(5)
+
+def threaded_client(connection, user):
+   while True:
+      #receive message from client
+      received = connection.recv(512).decode()
+
+      username = user
+
+      #Tweet command
+      if received[0:5] == "Tweet":   #tweet
+         #supposed to get tweet between quotations
+         tweetContent = received[received.find('"') + 1: received.find('"')]
+         hashtagFull = received[received.find('#'):]
+         hashtagList = []
+         currentHashtag = ''
+         i = 0
+         for char in hashtagFull:
+            if char == '#':
+               if len(hashtagList) == 0:
+                  currentHashtag = currentHashtag + char
+               else:
+                  hashtagList.append(currentHashtag)
+                  currentHashtag = '#'
+               i = i + 1
+            else:
+               currentHashtag = currentHashtag + char
+               if (i == len(hashtagFull) - 1):
+                  hashtagList.append(currentHashtag)
+               else:
+                  i = i + 1
+         #process tweet
+         users[username][0].append(tweetContent)
+
+         #send tweet to clients subscribed to each mentioned hashtag
+         for tag in hashtagList:
+            for user in hashtags[user]:
+               connectionS = users[user][1] #connection of that user
+               connectionS.sendall(tweetContent.encode())
+               users[username]
+         connection.sendall('Ready for next input'.encode())
+
+
+
+
+
+
+      #subscribe command
+      elif received[0:9] == 'subscribe':
+         tag = received[10:]
+         if tag == "#ALL":
+            for htag in hashtags.keys():    #loop through each hashtag
+               if username not in hashtags[htag]:
+                  hashtags[htag].append(username)    #no duplicates
          else:
-         #otherwise, send an empty message
-            conn.sendall(''.encode())
-      elif data == 'upload':
-         #send to client that server is ready to receive new message
-         conn.sendall('ready'.encode())
-         data = conn.recv(256).decode()
-         #check message for length
-         if len(data) > 150:
-            conn.sendall('message >150 characters'.encode())
-         message = data
-         #send to client that message was successfully saved
-         conn.sendall('ok'.encode())
-      #close connection to client regardless
-      conn.close()
-   s.close()
-  
-  
-if __name__ == '__main__': 
-   Main()
+            if tag in hashtags.keys():
+               hashtags[tag].append(username)
+            else:
+               hashtags[tag] = []
+               hashtags[tag].append(username)
+         connection.sendall('Ready for next input'.encode())
+
+
+
+      #unsubscribe command
+      elif received[0:11] == 'unsubscribe':
+         tag = received[12:]
+         if tag == '#ALL':
+            for htag in hashtags.keys():
+               if username in hashtags[htag]:
+                  hashtags[htag].remove(username)
+         else:
+            if tag in hashtags.keys():
+               hashtags[tag].remove(username)
+         connection.sendall('Ready for next input'.encode())
+
+
+
+      #timeline command
+      elif received == 'timeline':
+         connection.sendall('Ready for next input'.encode())
+
+
+      #getusers command
+      elif received == 'getusers':
+         userList = []
+         for user in users.keys():
+            userList.append(user)
+         connection.sendall(userList.encode())
+
+
+      #gettweets command
+   elif received[0:9] == 'gettweets':
+      uName = received[10:]
+
+   elif received == 'exit':
+      del users[username]
+      connection.sendall('bye bye'.encode())
+      connection.close()
+
+
+
+
+#a forever loop until client wants to exit
+while True:
+
+   #establish connection with client
+   #addr is address bound to socket on other end of connection
+   #connectionSocket is new socket object usable to send and receive data
+   connectionSocket, addr = s.accept()
+
+   #start a new thread and determine if client wants to upload or download
+   data = connectionSocket.recv(256).decode()
+
+   #if user exists
+   if data in users:
+      connectionSocket.sendall('username illegal, connection refused.'.encode())
+   else:
+      connectionSocket.sendall('username legal, connection established.'.encode())
+      users[data] = ([], connectionSocket, addr {})
+
+      ip, port = str(addr[0]), str(addr[1])
+      print("connected with " + ip + ":" + port)
+
+      start_new_thread(threaded_client, (connectionSocket, data)). ###may not be able to have data here
+
+s.close()
+
+
+#if __name__ == '__main__':
+#   Main()
 
 #based on following code from https://pymotw.com/3/socket/tcp.html
 # import socket
