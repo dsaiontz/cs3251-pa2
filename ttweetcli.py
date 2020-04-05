@@ -120,13 +120,17 @@ def Main():
             if len(command) < 11:
                 print('hashtag illegal format, connection refused.')
                 continue
-            hashTag = command[11:]
+            print('pass first if')
+            hashTag = command[10:]
+            print(hashTag)
             if len(hashTag) == 0 or not hashTag[0] == ('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
                 print('hashtag illegal format, connection refused.')
                 continue
+            print('pass second if')
             if len(hashTag) > 15:
                 print('hashtag illegal format, connection refused.')
                 continue
+            print('pass third if')
             subscribeWasUsed = True
             s.sendall(command.encode())
 

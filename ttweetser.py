@@ -37,7 +37,7 @@ def threaded_client(connection, user):
       if received[0:5] == "tweet":   #tweet
          print('got tweet')
          #supposed to get tweet between quotations
-         tweetContent = received[received.find('"') + 1: received.find('"')]
+         tweetContent = received[received.find('"'):]
          hashtagFull = received[received.find('#'):]
          hashtagList = []
          currentHashtag = ''
@@ -57,6 +57,7 @@ def threaded_client(connection, user):
                else:
                   i = i + 1
          #process tweet
+         tweetContent = username + ': ' + tweetContent
          users[username][0].append(tweetContent)
 
          #send tweet to clients subscribed to each mentioned hashtag
