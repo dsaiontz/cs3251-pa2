@@ -84,7 +84,7 @@ def Main():
         subscribeWasUsed = False
         command = input('User command: ')
 
-        if len(command) > 5 and command[0, 5] == equals('tweet'):
+        if len(command) > 5 and command[0: 5] == ('tweet'):
             if len(command) < 7:
                 print('message length illegal, connection refused.')
                 continue
@@ -117,12 +117,12 @@ def Main():
                 continue
             s.sendall(command.encode())
 
-        if len(command) > 9 and command[0, 9] == equals('subscribe'):
+        if len(command) > 9 and command[0, 9] == ('subscribe'):
             if len(command) < 11:
                 print('hashtag illegal format, connection refused.')
                 continue
             hashTag = command[11:]
-            if len(hashTag) == 0 or not hashTag[0] == equals('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
+            if len(hashTag) == 0 or not hashTag[0] == ('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
                 print('hashtag illegal format, connection refused.')
                 continue
             if len(hashTag) > 15:
@@ -131,12 +131,12 @@ def Main():
             subscribeWasUsed = True
             s.sendall(command.encode())
 
-        if len(command) > 11 and command[0, 11] == equals('unsubscribe'):
+        if len(command) > 11 and command[0, 11] == ('unsubscribe'):
             if len(command) < 13:
                 print('hashtag illegal format, connection refused.')
                 continue
             hashTag = command[13:]
-            if len(hashTag) == 0 or not hashTag[0] == equals('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
+            if len(hashTag) == 0 or not hashTag[0] == ('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
                 print('hashtag illegal format, connection refused.')
                 continue
             if len(hashTag) > 15:
@@ -153,7 +153,7 @@ def Main():
             getUsersWasUsed = True
             s.sendall(command.encode())
 
-        if len(command) > 9 and command[0:9] == equals('gettweets'):
+        if len(command) > 9 and command[0:9] == ('gettweets'):
             if len(command < 11):
                 print('error: username has wrong format, connection refused.')
                 continue

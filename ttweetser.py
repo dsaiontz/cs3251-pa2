@@ -17,11 +17,11 @@ hashtags = {}
 
 
 #port number for server
-serverPort = int(sys.argv[1])
+port = int(sys.argv[1])
 
 #create socket and bind it with host and port
-serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serverSocket.bind(('', serverPort))
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind(('', port))
 
 #put the socket into listening mode
 print('The server is ready to receive')
