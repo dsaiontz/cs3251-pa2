@@ -102,21 +102,18 @@ def Main():
             if len(hashTags) == 0 or hashTags.find('##') > -1 or hashTags.count('#') > 5 or hashTags.find('#ALL') > -1:
                 print('hashtag illegal format, connection refused.')
                 continue
-            lastIndex = 0
-            curHashTagsLeft = hashTags
+            allHashTags = hashTags.split('#')
             shouldExitCommand = False
-            while lastIndex != hashTags.rfind('#'):
-                if curHashTagsLeft[1:].find('#') > 15:
+            print('reach while')
+            for hashTag in allHashTags:
+                if len(hashTag) > 14:
                     print('hashtag illegal format, connection refused.')
                     shouldExitCommand = True
                     break
-                else:
-                    curHashTagsLeft = curHashTagsLeft[curHashTagsLeft[1:].find('#'):]
+            print('left while')
             if shouldExitCommand:
                 continue
-            if len(curHashTagsLeft) > 15:
-                print('hashtag illegal format, connection refused.')
-                continue
+            print('sending')
             s.sendall(command.encode())
 
         if len(command) > 9 and command[0: 9] == ('subscribe'):
