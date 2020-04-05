@@ -151,6 +151,7 @@ while True:
       print("connected with " + ip + ":" + port)
 
       start_new_thread(threaded_client, (connectionSocket, data)) ###may not be able to have data here
+      connectionSocket.sendall('Ready for next input'.encode())
 
 s.close()
 
