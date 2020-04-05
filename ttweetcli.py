@@ -62,6 +62,8 @@ def Main():
     else:
         print('error: unknown error')
         return
+
+    timeline = []
         
     while True:
         response = s.recvall(512).decode()
@@ -69,6 +71,8 @@ def Main():
         if response.equals('bye bye'):
             return
         while not response.equals('Ready for next input'):
+            if not response.equals('bye bye') or not response.equals('message length illegal, connection refused.') or not response.equals('hashtag illegal format, connection refused.') or not response.equals('error: username has wrong format, connection refused.'):
+                timeline.insert(0, response)
             response = s.recvall(512).decode()
             print(response)
         command = input('User command: ')
@@ -133,6 +137,8 @@ def Main():
             s.sendall(command.encode())
 
         if command.equals('timeline'):
+            for tweet in timeline:
+                print(tweet)
             s.sendall(command.encode())
         
         if command.equals('getusers'):
