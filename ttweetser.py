@@ -21,11 +21,11 @@ serverPort = int(sys.argv[1])
 
 #create socket and bind it with host and port
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serverSocket.bind(('', port))
+serverSocket.bind(('', serverPort))
 
 #put the socket into listening mode
 print('The server is ready to receive')
-s.listen(5)
+serverSocket.listen(5)
 
 def threaded_client(connection, user):
    while True:
@@ -36,6 +36,7 @@ def threaded_client(connection, user):
 
       #Tweet command
       if received[0:5] == "Tweet":   #tweet
+         print('got tweet')
          #supposed to get tweet between quotations
          tweetContent = received[received.find('"') + 1: received.find('"')]
          hashtagFull = received[received.find('#'):]
@@ -134,7 +135,7 @@ while True:
    #establish connection with client
    #addr is address bound to socket on other end of connection
    #connectionSocket is new socket object usable to send and receive data
-   connectionSocket, addr = s.accept()
+   connectionSocket, addr = serverSocket.accept()
 
    #start a new thread and determine if client wants to upload or download
    data = connectionSocket.recv(256).decode()

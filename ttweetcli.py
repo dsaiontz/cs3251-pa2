@@ -32,7 +32,7 @@ def Main():
         print('error: server port invalid, connection refused.')
         return
 
-    username = sys.argv[4]
+    username = sys.argv[3]
     if not username.isalnum():
         print('error: username has wrong format, connection refused.')
         return
@@ -64,7 +64,7 @@ def Main():
         return
 
     timeline = []
-        
+
     getTweetsWasUsed = False
     getUsersWasUsed = False
     subscribeWasUsed = False
@@ -166,8 +166,8 @@ def Main():
         if command.equals('exit'):
             s.sendall(command)
 
-if __name__ == '__main__': 
-    Main() 
+if __name__ == '__main__':
+    Main()
 
 #based on following code from https://pymotw.com/3/socket/tcp.html
 # import socket
