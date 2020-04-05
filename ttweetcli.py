@@ -65,16 +65,23 @@ def Main():
 
     timeline = []
         
+    getTweetsWasUsed = False
+    getUsersWasUsed = False
+    subscribeWasUsed = False
+
     while True:
         response = s.recvall(512).decode()
         print(response)
         if response.equals('bye bye'):
             return
         while not response.equals('Ready for next input'):
-            if not response.equals('bye bye') or not response.equals('message length illegal, connection refused.') or not response.equals('hashtag illegal format, connection refused.') or not response.equals('error: username has wrong format, connection refused.'):
+            if not getTweetsWasUsed and not getUsersWasUsed and not subscribeWasUsed and (not response.equals('bye bye') or not response.equals('message length illegal, connection refused.') or not response.equals('hashtag illegal format, connection refused.') or not response.equals('error: username has wrong format, connection refused.')):
                 timeline.insert(0, response)
             response = s.recvall(512).decode()
             print(response)
+        getTweetsWasUsed = False
+        getUsersWasUsed = False
+        subscribeWasUsed = False
         command = input('User command: ')
 
         if len(command) > 5 and command[0, 5].equals('tweet'):
@@ -121,6 +128,7 @@ def Main():
             if len(hashTag) > 15:
                 print('hashtag illegal format, connection refused.')
                 continue
+            subscribeWasUsed = True
             s.sendall(command.encode())
 
         if len(command) > 11 and command[0, 11].equals('unsubscribe'):
@@ -142,6 +150,7 @@ def Main():
             s.sendall(command.encode())
         
         if command.equals('getusers'):
+            getUsersWasUsed = True
             s.sendall(command.encode())
 
         if len(command) > 9 and command[0:9].equals('gettweets'):
@@ -151,6 +160,7 @@ def Main():
             if not command[11:].isalnum():
                 print('error: username has wrong format, connection refused.')
                 continue
+            getTweetsWasUsed = True
             s.sendall(command.encode())
 
         if command.equals('exit'):
