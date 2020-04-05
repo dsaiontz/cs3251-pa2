@@ -157,13 +157,14 @@ def Main():
             s.sendall(command.encode())
 
         if len(command) > 9 and command[0:9] == ('gettweets'):
-            if len(command < 10):
+            if len(command) < 10:
                 print('error: username has wrong format, connection refused.')
                 continue
             if not command[10:].isalnum():
                 print('error: username has wrong format, connection refused.')
                 continue
             getTweetsWasUsed = True
+            print(sending)
             s.sendall(command.encode())
 
         if command == ('exit'):

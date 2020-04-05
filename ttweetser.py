@@ -63,8 +63,8 @@ def threaded_client(connection, user):
             if tag in hashtags:
                for userPerson in hashtags[tag]:
                   connectionS = users[userPerson][1] #connection of that user
-                  connectionS.sendall(tweetContent.encode())
-         connection.sendall('Ready for next input'.encode())
+                  connectionS.send(tweetContent.encode())
+         connection.send('Ready for next input'.encode())
 
 
 
