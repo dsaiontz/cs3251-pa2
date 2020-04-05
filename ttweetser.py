@@ -63,8 +63,9 @@ def threaded_client(connection, user):
          for tag in hashtagList:
             for user in hashtags[user]:
                connectionS = users[user][1] #connection of that user
-               connectionS.sendall(tweetContent)
+               connectionS.sendall(tweetContent.encode())
                users[username]
+         connection.sendall('Ready for next input'.encode())
 
 
 
@@ -84,6 +85,7 @@ def threaded_client(connection, user):
             else:
                hashtags[tag] = []
                hashtags[tag].append(username)
+         connection.sendall('Ready for next input'.encode())
 
 
 
@@ -97,17 +99,31 @@ def threaded_client(connection, user):
          else:
             if tag in hashtags.keys():
                hashtags[tag].remove(username)
+         connection.sendall('Ready for next input'.encode())
 
 
 
       #timeline command
       elif received == 'timeline':
+         connection.sendall('Ready for next input'.encode())
 
 
+      #getusers command
+      elif received == 'getusers':
+         userList = []
+         for user in users.keys():
+            userList.append(user)
+         connection.sendall(userList.encode())
 
 
+      #gettweets command
+   elif received[0:9] == 'gettweets':
+      uName = received[10:]
 
-   connection.close()
+   elif received == 'exit':
+      del users[username]
+      connection.sendall('bye bye'.encode())
+      connection.close()
 
 
 
