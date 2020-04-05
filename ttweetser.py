@@ -6,8 +6,6 @@ import sys
 
 #current message
 
-lock = threading.Lock()
-
 #key: username, value: ([tweets sent], connectionSocket, addr)
 users = {}
 #key: hashtag, value: [usernames]

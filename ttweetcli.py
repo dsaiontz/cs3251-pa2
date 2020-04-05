@@ -135,10 +135,10 @@ def Main():
             s.sendall(command.encode())
 
         if len(command) > 11 and command[0: 11] == ('unsubscribe'):
-            if len(command) < 13:
+            if len(command) < 12:
                 print('hashtag illegal format, connection refused.')
                 continue
-            hashTag = command[13:]
+            hashTag = command[12:]
             if len(hashTag) == 0 or not hashTag[0] == ('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
                 print('hashtag illegal format, connection refused.')
                 continue
@@ -157,10 +157,10 @@ def Main():
             s.sendall(command.encode())
 
         if len(command) > 9 and command[0:9] == ('gettweets'):
-            if len(command < 11):
+            if len(command < 10):
                 print('error: username has wrong format, connection refused.')
                 continue
-            if not command[11:].isalnum():
+            if not command[10:].isalnum():
                 print('error: username has wrong format, connection refused.')
                 continue
             getTweetsWasUsed = True
