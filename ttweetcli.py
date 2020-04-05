@@ -84,7 +84,7 @@ def Main():
         subscribeWasUsed = False
         command = input('User command: ')
 
-        if len(command) > 5 and command[0, 5].equals('tweet'):
+        if len(command) > 5 and command[0, 5] == ('tweet'):
             if len(command) < 7:
                 print('message length illegal, connection refused.')
                 continue
