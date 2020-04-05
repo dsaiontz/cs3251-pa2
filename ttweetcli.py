@@ -47,7 +47,7 @@ def Main():
         print('error: server not found.')   ########is this correct????
         return
 
-    s.sendall(('username = ' + username).encode())
+    s.sendall((username).encode())
     data = s.recv(512).decode()
     if data == ('username illegal, connection refused.'):
         print(data)

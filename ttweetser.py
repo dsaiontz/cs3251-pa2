@@ -8,8 +8,7 @@ import sys
 
 lock = threading.Lock()
 
-#key: username, value: ([tweets sent], connectionSocket, addr,
-#                       {tweets received: (sender username, tweet, origin hashtag)})
+#key: username, value: ([tweets sent], connectionSocket, addr)
 users = {}
 #key: hashtag, value: [usernames]
 hashtags = {}
