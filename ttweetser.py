@@ -61,9 +61,10 @@ def threaded_client(connection, user):
          #send tweet to clients subscribed to each mentioned hashtag
          for tag in hashtagList:
             if tag in hashtags:
-               for userPerson in hashtags[tag]:
-                  connectionS = users[userPerson][1] #connection of that user
-                  connectionS.send(tweetContent.encode())
+               if userPerson not is username:
+                  for userPerson in hashtags[tag]:
+                     connectionS = users[userPerson][1] #connection of that user
+                     connectionS.send(tweetContent.encode())
          connection.send('Ready for next input'.encode())
 
 
