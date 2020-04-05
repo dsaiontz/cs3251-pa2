@@ -59,7 +59,7 @@ def threaded_client(connection, user):
          #process tweet
          tweetContent = username + ': ' + tweetContent
          users[username][0].append(tweetContent)
-
+         hashtagList.append('#ALL')
          #send tweet to clients subscribed to each mentioned hashtag
          for tag in hashtagList:
             if tag in hashtags:
@@ -76,16 +76,11 @@ def threaded_client(connection, user):
       #subscribe command
       elif received[0:9] == 'subscribe':
          tag = received[10:]
-         if tag == "#ALL":
-            for htag in hashtags.keys():    #loop through each hashtag
-               if username not in hashtags[htag]:
-                  hashtags[htag].append(username)    #no duplicates
+         if tag in hashtags.keys():
+            hashtags[tag].append(username)
          else:
-            if tag in hashtags.keys():
-               hashtags[tag].append(username)
-            else:
-               hashtags[tag] = []
-               hashtags[tag].append(username)
+            hashtags[tag] = []
+            hashtags[tag].append(username)
          connection.sendall('Ready for next input'.encode())
 
 
