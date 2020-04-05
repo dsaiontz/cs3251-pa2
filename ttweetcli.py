@@ -164,7 +164,7 @@ def Main():
                 print('error: username has wrong format, connection refused.')
                 continue
             getTweetsWasUsed = True
-            print(sending)
+            print('sending')
             s.sendall(command.encode())
 
         if command == ('exit'):
