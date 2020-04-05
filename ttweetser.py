@@ -113,6 +113,9 @@ def threaded_client(connection, user):
       #gettweets command
       elif received[0:9] == 'gettweets':
          uName = received[10:]
+         for ttweet in users[uName][0]:
+            conn = users[uName][1]
+            conn.sendall(ttweet.encode())
 
       elif received == 'exit':
          del users[username]
