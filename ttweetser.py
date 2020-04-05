@@ -117,13 +117,13 @@ def threaded_client(connection, user):
 
 
       #gettweets command
-   elif received[0:9] == 'gettweets':
-      uName = received[10:]
+      elif received[0:9] == 'gettweets':
+         uName = received[10:]
 
-   elif received == 'exit':
-      del users[username]
-      connection.sendall('bye bye'.encode())
-      connection.close()
+      elif received == 'exit':
+         del users[username]
+         connection.sendall('bye bye'.encode())
+         connection.close()
 
 
 
@@ -144,12 +144,12 @@ while True:
       connectionSocket.sendall('username illegal, connection refused.'.encode())
    else:
       connectionSocket.sendall('username legal, connection established.'.encode())
-      users[data] = ([], connectionSocket, addr {})
+      users[data] = ([], connectionSocket, addr, {})
 
       ip, port = str(addr[0]), str(addr[1])
       print("connected with " + ip + ":" + port)
 
-      start_new_thread(threaded_client, (connectionSocket, data)). ###may not be able to have data here
+      start_new_thread(threaded_client, (connectionSocket, data)) ###may not be able to have data here
 
 s.close()
 
