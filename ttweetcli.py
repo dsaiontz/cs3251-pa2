@@ -88,7 +88,8 @@ def Main():
             if len(command) < 7:
                 print('message length illegal, connection refused.')
                 continue
-            messageAndHashTag = command[7:]
+            messageAndHashTag = command[6:]
+            print(messageAndHashTag)
             if messageAndHashTag.find('"') == messageAndHashTag.rfind('"'):
                 print('hashtag illegal format, connection refused.')
                 continue
@@ -96,28 +97,26 @@ def Main():
             if len(message) > 150 or len(message) < 0:
                 print('message length illegal, connection refused.')
                 continue
-            hashTags = messageAndHashTag[:messageAndHashTag.find('"') + 2]
+            hashTags = messageAndHashTag[:messageAndHashTag.rfind('"') + 2]
+            print(hashTags)
             if len(hashTags) == 0 or hashTags.find('##') > -1 or hashTags.count('#') > 5 or hashTags.find('#ALL') > -1:
                 print('hashtag illegal format, connection refused.')
                 continue
-            lastIndex = 0
-            curHashTagsLeft = hashTags
+            allHashTags = hashTags.split('#')
             shouldExitCommand = False
-            while lastIndex != hashTags.rfind('#'):
-                if curHashTagsLeft[1:].find('#') > 15:
+            print('reach while')
+            for hashTag in allHashTags:
+                if len(hashTag) > 14:
                     print('hashtag illegal format, connection refused.')
                     shouldExitCommand = True
                     break
-                else:
-                    curHashTagsLeft = curHashTagsLeft[curHashTagsLeft[1:].find('#'):]
+            print('left while')
             if shouldExitCommand:
                 continue
-            if len(curHashTagsLeft) > 15:
-                print('hashtag illegal format, connection refused.')
-                continue
+            print('sending')
             s.sendall(command.encode())
 
-        if len(command) > 9 and command[0, 9] == ('subscribe'):
+        if len(command) > 9 and command[0: 9] == ('subscribe'):
             if len(command) < 11:
                 print('hashtag illegal format, connection refused.')
                 continue
@@ -131,7 +130,7 @@ def Main():
             subscribeWasUsed = True
             s.sendall(command.encode())
 
-        if len(command) > 11 and command[0, 11] == ('unsubscribe'):
+        if len(command) > 11 and command[0: 11] == ('unsubscribe'):
             if len(command) < 13:
                 print('hashtag illegal format, connection refused.')
                 continue
