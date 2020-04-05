@@ -36,7 +36,8 @@ def threaded_client(connection, user):
          print('got tweet')
          #supposed to get tweet between quotations
          tweetContent = received[received.find('"'):]
-         hashtagFull = received[received.find('#'):]
+         afterMessage = received[received.rfind('"'):]
+         hashtagFull = afterMessage[afterMessage.find('#'):]
          hashtagList = []
          currentHashtag = ''
          i = 0
