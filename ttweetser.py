@@ -17,11 +17,11 @@ hashtags = {}
 
 
 #port number for server
-serverPort = int(sys.argv[1])
+port = int(sys.argv[1])
 
 #create socket and bind it with host and port
-serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serverSocket.bind(('', port))
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind(('', port))
 
 #put the socket into listening mode
 print('The server is ready to receive')
@@ -150,6 +150,7 @@ while True:
       print("connected with " + ip + ":" + port)
 
       start_new_thread(threaded_client, (connectionSocket, data)) ###may not be able to have data here
+      connectionSocket.sendall('Ready for next input'.encode())
 
 s.close()
 
