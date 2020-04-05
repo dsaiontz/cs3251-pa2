@@ -123,6 +123,7 @@ def threaded_client(connection, user):
          del users[username]
          connection.sendall('bye bye'.encode())
          connection.close()
+         return
 
 
 
