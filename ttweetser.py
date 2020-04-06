@@ -27,6 +27,7 @@ s.listen(5)
 def threaded_client(connection, user):
    connectionSocket.sendall('Ready for next input'.encode())
    while True:
+      connectionSocket.sendall('Ready for next input'.encode())
       #receive message from client
       received = connection.recv(512).decode()
 
@@ -67,6 +68,7 @@ def threaded_client(connection, user):
                   if userPerson != username:
                      connectionS = users[userPerson][1] #connection of that user
                      connectionS.send(tweetContent.encode())
+         connection.send('operation success'.encode())
          connection.send('Ready for next input'.encode())
 
 
@@ -161,7 +163,6 @@ while True:
       print("connected with " + ip + ":" + port)
 
       start_new_thread(threaded_client, (connectionSocket, data)) ###may not be able to have data here
-      #connectionSocket.sendall('Ready for next input'.encode())
 
 s.close()
 
