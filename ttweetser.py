@@ -108,8 +108,10 @@ def threaded_client(connection, user):
       elif received == 'getusers':
          userList = []
          for user in users.keys():
-            userList.append(user)
-         connection.sendall(userList.encode())
+            connection.sendall(user.encode())
+            check = connection.recv(512).decode()
+         connection.sendall('finished'.encode())
+         check = connection.recv(512).decode()
          connection.sendall('Ready for next input'.encode())
 
 
@@ -117,7 +119,10 @@ def threaded_client(connection, user):
       elif received[0:9] == 'gettweets':
          uName = received[10:]
          for ttweet in users[uName][0]:
+            #print(ttweet)
             connection.send(ttweet.encode())
+            answer = connection.recv(512).decode()
+
          connection.send('Ready for next input'.encode())
 
       elif received == 'exit':

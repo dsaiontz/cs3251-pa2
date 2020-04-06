@@ -70,18 +70,21 @@ def Main():
     subscribeWasUsed = False
 
     while True:
-        response = s.recv(512).decode()
+        response = s.recv(512).decode()  #response is entire thing?
         print(response)
         if response == ('bye bye'):
             return
-        while not response == ('Ready for next input'):
+        if response != ('Ready for next input'): ###while
             if not getTweetsWasUsed and not getUsersWasUsed and not subscribeWasUsed and (not response == ('bye bye') or not response == ('message length illegal, connection refused.') or not response == ('hashtag illegal format, connection refused.') or not response == ('error: username has wrong format, connection refused.')):
                 timeline.insert(0, response)
-            response = s.recv(512).decode()
-            print(response)
+            #response = s.recv(512).decode()
+            #print(response)
+            s.sendall("continue".encode())
+            continue
         getTweetsWasUsed = False
         getUsersWasUsed = False
         subscribeWasUsed = False
+        #print("test") #NOT GETTING HERE
         command = input('User command: ')
 
         if len(command) > 5 and command[0: 5] == ('tweet'):
@@ -147,6 +150,19 @@ def Main():
         if command == ('getusers'):
             getUsersWasUsed = True
             s.sendall(command.encode())
+
+            responseUsers = ''
+            while True:
+                responseUsers = s.recv(512).decode()
+                if responseUsers == 'finished':
+                    s.sendall('received'.encode())
+                    break
+                print(responseUsers)
+                s.sendall('continue'.encode())
+            continue
+
+
+
 
         if len(command) > 9 and command[0:9] == ('gettweets'):
             if len(command) < 10:
