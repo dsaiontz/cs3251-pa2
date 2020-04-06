@@ -25,11 +25,14 @@ print('The server is ready to receive')
 s.listen(5)
 
 def threaded_client(connection, user):
-   connectionSocket.sendall('Ready for next input'.encode())
    while True:
-      connectionSocket.sendall('Ready for next input'.encode())
+      connection.send('020Ready for next input'.encode())
       #receive message from client
-      received = connection.recv(512).decode()
+      try:
+         receivedLength = int(connection.recv(3).decode())
+         received = str(connection.recv(receivedLength).decode())
+      except Exception:
+         connection.send('020error: cause unknown')
 
       username = user
 
@@ -59,6 +62,9 @@ def threaded_client(connection, user):
                   i = i + 1
          #process tweet
          tweetContent = username + ': ' + tweetContent
+         lengthOfContent = str(len(tweetContent))
+         lengthOfContent = lengthOfContent.zfill(3)
+         tweetContent = lengthOfContent + tweetContent
          users[username][0].append(tweetContent)
          hashtagList.append('#ALL')
          #send tweet to clients subscribed to each mentioned hashtag
@@ -68,9 +74,8 @@ def threaded_client(connection, user):
                   if userPerson != username:
                      connectionS = users[userPerson][1] #connection of that user
                      connectionS.send(tweetContent.encode())
-         connection.send('operation success'.encode())
-         connection.send('Ready for next input'.encode())
-
+         connection.send('017operation success'.encode())
+         connection.send('020Ready for next input'.encode())
 
 
 
@@ -84,7 +89,7 @@ def threaded_client(connection, user):
          else:
             hashtags[tag] = []
             hashtags[tag].append(username)
-         connection.sendall('Ready for next input'.encode())
+         connection.sendall('020Ready for next input'.encode())
 
 
 
@@ -98,25 +103,30 @@ def threaded_client(connection, user):
          else:
             if tag in hashtags.keys():
                hashtags[tag].remove(username)
-         connection.sendall('Ready for next input'.encode())
+         connection.sendall('020Ready for next input'.encode())
 
 
 
       #timeline command
       elif received == 'timeline':
-         connection.sendall('Ready for next input'.encode())
+         connection.sendall('020Ready for next input'.encode())
 
 
       #getusers command
       elif received == 'getusers':
          userList = []
          for user in users.keys():
-            connection.sendall(user.encode())
-            check = connection.recv(512).decode()
-         check = connection.recv(512).decode()
-         connection.sendall('finished'.encode())
-         check = connection.recv(512).decode()
-         connection.sendall('Ready for next input'.encode())
+            lengthOfUser = str(len(user))
+            lengthOfUser = lengthOfUser.zfill(3)
+            connection.sendall((lengthOfUser + user).encode())
+            check = connection.recv(3).decode()
+            check = connection.recv(check).decode()
+         check = connection.recv(3).decode()
+         check = connection.recv(check).decode()
+         connection.sendall('008finished'.encode())
+         check = connection.recv(3).decode()
+         check = connection.recv(check).decode()
+         connection.sendall('020Ready for next input'.encode())
 
 
       #gettweets command
@@ -124,17 +134,20 @@ def threaded_client(connection, user):
          uName = received[10:]
          for ttweet in users[uName][0]:
             #print(ttweet)
-            connection.send(ttweet.encode())
-            answer = connection.recv(512).decode()
+            lengthOfTweet = str(len(ttweet))
+            lengthOfTweet = lengthOfTweet.zfill(3)
+            connection.send((lengthOfTweet + ttweet).encode())
+            answer = connection.recv(3).decode()
+            answer = connection.recv(answer).decode()
 
-         connection.send('Ready for next input'.encode())
+         connection.send('020Ready for next input'.encode())
 
       elif received == 'exit':
          for hashtag in hashtags.keys():
             if username in hashtags[hashtag]:
                hashtags[hashtag].remove(username)
          del users[username]
-         connection.sendall('bye bye'.encode())
+         connection.sendall('007bye bye'.encode())
          connection.close()
          return
 
@@ -150,13 +163,17 @@ while True:
    connectionSocket, addr = s.accept()
 
    #start a new thread and determine if client wants to upload or download
-   data = connectionSocket.recv(256).decode()
+   try:
+      dataLength = int(connectionSocket.recv(3).decode())
+      data = connectionSocket.recv(dataLength).decode()
+   except Exception:
+      connectionSocket.send('037username illegal, connection refused.'.encode())
 
    #if user exists
    if data in users:
-      connectionSocket.sendall('username illegal, connection refused.'.encode())
+      connectionSocket.sendall('037username illegal, connection refused.'.encode())
    else:
-      connectionSocket.sendall('username legal, connection established.'.encode())
+      connectionSocket.sendall('039username legal, connection established.'.encode())
       users[data] = ([], connectionSocket, addr, {})
 
       ip, port = str(addr[0]), str(addr[1])
