@@ -1,0 +1,21 @@
+username legal, connection established.
+Ready for next input
+User command: 
+user network stdin command: subscribe #ALL
+#ALL
+Ready for next input
+User command: 
+user network stdin command: unsubscribe #ALL
+network0: " " #0#1network0: "cs3251" #0#1network0: "fsadfsdfd" #0#1network1: " " #0#1network1: "cs3251" #0#1network1: "fsadfsdfd" #0#1network2: " " #0#1network2: "cs3251" #0#1network2: "fsadfsdfd" #0#1network3: " " #0#1network3: "cs3251" #0#1network3: "fsadfsdfd" #0#1
+Ready for next input
+User command: 
+user network stdin command: timeline
+network0: " " #0#1network0: "cs3251" #0#1network0: "fsadfsdfd" #0#1network1: " " #0#1network1: "cs3251" #0#1network1: "fsadfsdfd" #0#1network2: " " #0#1network2: "cs3251" #0#1network2: "fsadfsdfd" #0#1network3: " " #0#1network3: "cs3251" #0#1network3: "fsadfsdfd" #0#1
+Ready for next input
+User command: 
+user network stdin command: timeline
+network0: " " #0#1network0: "cs3251" #0#1network0: "fsadfsdfd" #0#1network1: " " #0#1network1: "cs3251" #0#1network1: "fsadfsdfd" #0#1network2: " " #0#1network2: "cs3251" #0#1network2: "fsadfsdfd" #0#1network3: " " #0#1network3: "cs3251" #0#1network3: "fsadfsdfd" #0#1
+Ready for next input
+User command: 
+user network stdin command: exit
+bye bye

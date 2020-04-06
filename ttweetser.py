@@ -25,6 +25,7 @@ print('The server is ready to receive')
 s.listen(5)
 
 def threaded_client(connection, user):
+   connectionSocket.sendall('Ready for next input'.encode())
    while True:
       #receive message from client
       received = connection.recv(512).decode()
@@ -110,6 +111,7 @@ def threaded_client(connection, user):
          for user in users.keys():
             connection.sendall(user.encode())
             check = connection.recv(512).decode()
+         check = connection.recv(512).decode()
          connection.sendall('finished'.encode())
          check = connection.recv(512).decode()
          connection.sendall('Ready for next input'.encode())
@@ -159,7 +161,7 @@ while True:
       print("connected with " + ip + ":" + port)
 
       start_new_thread(threaded_client, (connectionSocket, data)) ###may not be able to have data here
-      connectionSocket.sendall('Ready for next input'.encode())
+      #connectionSocket.sendall('Ready for next input'.encode())
 
 s.close()
 
