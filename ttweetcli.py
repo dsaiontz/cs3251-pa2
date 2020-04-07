@@ -3,6 +3,13 @@ import socket
 import sys
 import re
 
+timeline = []
+getTweetsWasUsed = False
+getUsersWasUsed = False
+subscribeWasUsed = False
+timelineWasUsed = False
+commandNotIssued = True
+
 def Main():
 
     if len(sys.argv) != 4:
@@ -73,7 +80,12 @@ def Main():
     subscribeWasUsed = False
     timelineWasUsed = False
 
+
+
+def receiveClientSide(s):
     while True:
+        while commandNotIssued:
+            1+1
         responseLength = int(s.recv(3).decode())  #response is entire thing?
         response = s.recv(responseLength).decode()
         if response != 'Ready for next input':
@@ -90,8 +102,11 @@ def Main():
         getTweetsWasUsed = False
         getUsersWasUsed = False
         subscribeWasUsed = False
-        timelineWasUsed = False
+        timelineWasUsed = False 
+        commandNotIssued = True       
 
+def inputClientSide(s):
+    while True:
         command = input('')
 
         commandLen = str(len(command))
@@ -202,6 +217,8 @@ def Main():
 
         elif command == ('exit'):
             s.send((str(commandLen) + command).encode())
+        
+        commandNotIssued = False
 
 if __name__ == '__main__':
     Main()
