@@ -6,16 +6,21 @@ import threading
 
 #input client thread: receiving commands
 #
+timeline = []
 
+getTweetsWasUsed = False
+getUsersWasUsed = False
+subscribeWasUsed = False
+timelineWasUsed = False
 
 def Main():
 
-    timeline = []
+    #timeline = []
 
-    getTweetsWasUsed = False
-    getUsersWasUsed = False
-    subscribeWasUsed = False
-    timelineWasUsed = False
+    #getTweetsWasUsed = False
+    #getUsersWasUsed = False
+    #subscribeWasUsed = False
+    #timelineWasUsed = False
 
     if len(sys.argv) != 4:
         print('error: args should contain <ServerIP> <ServerPort> <Username>')
@@ -81,7 +86,14 @@ def Main():
 
 
     def clientReceiveThread():
+        global timeline
+        global getTweetsWasUsed
+        global getUsersWasUsed
+        global subscribeWasUsed
+        global timelineWasUsed
+
         while True:
+            print(getUsersWasUsed)
             if getUsersWasUsed:
                 responseLength = int(s.recv(3).decode())
                 response = s.recv(responseLength).decode()
@@ -114,6 +126,12 @@ def Main():
 
 
     def clientSendingThread():
+        global timeline
+        global getTweetsWasUsed
+        global getUsersWasUsed
+        global subscribeWasUsed
+        global timelineWasUsed
+
         while True:
             command = input('')
 
