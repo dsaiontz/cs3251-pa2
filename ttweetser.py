@@ -69,12 +69,15 @@ def threaded_client(connection, user):
          users[username][0].append(tweetContent)
          hashtagList.append('#ALL')
          #send tweet to clients subscribed to each mentioned hashtag
+         usersSentTo = []
          for tag in hashtagList:
             if tag in hashtags:
                for userPerson in hashtags[tag]:
-                  if userPerson != username:
+                  if userPerson != username and userPerson not in usersSentTo:
                      connectionS = users[userPerson][1] #connection of that user
                      connectionS.send(tweetContent.encode())
+                     connectionS.send('020Ready for next input'.encode())
+                     usersSentTo.append(userPerson)
          connection.send('017operation success'.encode())
          receivedLength = int(connection.recv(3).decode())
          received = str(connection.recv(receivedLength).decode())
@@ -131,6 +134,8 @@ def threaded_client(connection, user):
          checkLength = int(connection.recv(3).decode())
          check = connection.recv(checkLength).decode()
          connection.send('008finished'.encode())
+         checkLength = int(connection.recv(3).decode())
+         check = connection.recv(checkLength).decode()
          connection.send('020Ready for next input'.encode())
 
 
@@ -142,8 +147,8 @@ def threaded_client(connection, user):
             lengthOfTweet = str(len(ttweet))
             lengthOfTweet = lengthOfTweet.zfill(3)
             connection.send((lengthOfTweet + ttweet).encode())
-            answerLength = connection.recv(3).decode()
-            answer = int(connection.recv(answerLength).decode())
+            answerLength = int(connection.recv(3).decode())
+            answer = connection.recv(answerLength).decode()
 
          connection.send('020Ready for next input'.encode())
 

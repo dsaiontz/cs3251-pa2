@@ -3,6 +3,7 @@ import socket
 import sys
 import re
 import threading
+import time
 
 #input client thread: receiving commands
 #
@@ -12,6 +13,8 @@ getTweetsWasUsed = False
 getUsersWasUsed = False
 subscribeWasUsed = False
 timelineWasUsed = False
+
+commandProcessing = False
 
 def Main():
 
@@ -91,14 +94,14 @@ def Main():
         global getUsersWasUsed
         global subscribeWasUsed
         global timelineWasUsed
+        global commandProcessing
 
         while True:
-            print(getUsersWasUsed)
             if getUsersWasUsed:
                 responseLength = int(s.recv(3).decode())
                 response = s.recv(responseLength).decode()
                 while response != 'finished':
-                    print(repsonse)
+                    print(response)
                     responseLength = int(s.recv(3).decode())
                     response = s.recv(responseLength).decode()
                     s.send('008received'.encode())
@@ -112,7 +115,8 @@ def Main():
             if response == ('bye bye'):
                 return
             if response != ('Ready for next input'): ###while
-                if not getTweetsWasUsed and not getUsersWasUsed and not subscribeWasUsed and (not response == ('bye bye') or not response == ('message length illegal, connection refused.') or not response == ('hashtag illegal format, connection refused.') or not response == ('error: username has wrong format, connection refused.')):
+                if response != 'operation success' and not getTweetsWasUsed and not getUsersWasUsed and not subscribeWasUsed and (not response == ('bye bye') or not response == ('message length illegal, connection refused.') or not response == ('hashtag illegal format, connection refused.') or not response == ('error: username has wrong format, connection refused.')):
+                    print('Adding to timeline: ' + response)
                     timeline.append(response)
                 #response = s.recv(512).decode()
                 #print(response)
@@ -122,6 +126,7 @@ def Main():
             getUsersWasUsed = False
             subscribeWasUsed = False
             timelineWasUsed = False
+            commandProcessing = False
 
 
 
@@ -131,8 +136,13 @@ def Main():
         global getUsersWasUsed
         global subscribeWasUsed
         global timelineWasUsed
+        global commandProcessing
+
 
         while True:
+            while commandProcessing:
+                time.sleep(0.1)
+
             command = input('')
 
             commandLen = str(len(command))
