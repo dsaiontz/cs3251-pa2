@@ -63,10 +63,10 @@ def threaded_client(connection, user):
                   i = i + 1
          #process tweet
          tweetContent = username + ': ' + tweetContent
+         users[username][0].append(tweetContent)
          lengthOfContent = str(len(tweetContent))
          lengthOfContent = lengthOfContent.zfill(3)
          tweetContent = lengthOfContent + tweetContent
-         users[username][0].append(tweetContent)
          hashtagList.append('#ALL')
          #send tweet to clients subscribed to each mentioned hashtag
          usersSentTo = []
@@ -128,22 +128,16 @@ def threaded_client(connection, user):
             lengthOfUser = lengthOfUser.zfill(3)
             print(lengthOfUser + user)
             connection.send((lengthOfUser + user).encode())
-            checkLength = int(connection.recv(3).decode())
-            check = connection.recv(checkLength).decode()
-            print(check)
-         checkLength = int(connection.recv(3).decode())
-         check = connection.recv(checkLength).decode()
          connection.send('008finished'.encode())
-         checkLength = int(connection.recv(3).decode())
-         check = connection.recv(checkLength).decode()
          connection.send('020Ready for next input'.encode())
 
 
       #gettweets command
       elif received[0:9] == 'gettweets':
+         print('gettweets 1: ' + received)
          uName = received[10:]
          for ttweet in users[uName][0]:
-            #print(ttweet)
+            print('gettweets 2: ' + ttweet)
             lengthOfTweet = str(len(ttweet))
             lengthOfTweet = lengthOfTweet.zfill(3)
             connection.send((lengthOfTweet + ttweet).encode())
