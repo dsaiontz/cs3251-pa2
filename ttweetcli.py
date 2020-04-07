@@ -14,7 +14,6 @@ getUsersWasUsed = False
 subscribeWasUsed = False
 timelineWasUsed = False
 
-noNewCommands = False
 
 def Main():
 
@@ -94,11 +93,9 @@ def Main():
         global getUsersWasUsed
         global subscribeWasUsed
         global timelineWasUsed
-        global noNewCommands
 
         while True:
             if getUsersWasUsed:
-                noNewCommands = True
                 responseLength = int(s.recv(3).decode())
                 response = s.recv(responseLength).decode()
                 while response != 'finished':
@@ -110,7 +107,6 @@ def Main():
                 continue
             responseLength = int(s.recv(3).decode())  #response is entire thing?
             response = s.recv(responseLength).decode()
-            noNewCommands = True
             if response != 'Ready for next input':
                 print(response)
             if response == ('bye bye'):
@@ -126,7 +122,6 @@ def Main():
             getUsersWasUsed = False
             subscribeWasUsed = False
             timelineWasUsed = False
-            noNewCommands = False
 
 
 
@@ -136,12 +131,9 @@ def Main():
         global getUsersWasUsed
         global subscribeWasUsed
         global timelineWasUsed
-        global noNewCommands
 
 
         while True:
-            while noNewCommands:
-                time.sleep(0.1)
 
             command = input('')
 
