@@ -6,14 +6,16 @@ import threading
 
 #input client thread: receiving commands
 #
-timeline = []
 
-getTweetsWasUsed = False
-getUsersWasUsed = False
-subscribeWasUsed = False
-timelineWasUsed = False
 
 def Main():
+
+    timeline = []
+
+    getTweetsWasUsed = False
+    getUsersWasUsed = False
+    subscribeWasUsed = False
+    timelineWasUsed = False
 
     if len(sys.argv) != 4:
         print('error: args should contain <ServerIP> <ServerPort> <Username>')
@@ -80,6 +82,17 @@ def Main():
 
     def clientReceiveThread():
         while True:
+            if getUsersWasUsed:
+                responseLength = int(s.recv(3).decode())
+                response = s.recv(responseLength).decode()
+                while response != 'finished':
+                    print(repsonse)
+                    responseLength = int(s.recv(3).decode())
+                    response = s.recv(responseLength).decode()
+                    s.send('008received'.encode())
+            if getUsersWasUsed:
+                getUsersWasUsed = False
+                continue
             responseLength = int(s.recv(3).decode())  #response is entire thing?
             response = s.recv(responseLength).decode()
             if response != 'Ready for next input':
@@ -103,7 +116,6 @@ def Main():
     def clientSendingThread():
         while True:
             command = input('')
-            print(command)
 
             commandLen = str(len(command))
             commandLen = commandLen.zfill(3)
@@ -147,7 +159,6 @@ def Main():
                     s.send('008timeline'.encode())
                     continue
                 hashTag = command[10:]
-                print(hashTag)
                 if len(hashTag) == 0 or not hashTag[0] == ('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
                     print('hashtag illegal format, connection refused.')
                     s.send('008timeline'.encode())
@@ -184,17 +195,6 @@ def Main():
             elif command == ('getusers'):
                 getUsersWasUsed = True
                 s.send((str(commandLen) + command).encode())
-
-                responseUsers = ''
-                while True:
-                    responseUsersLength = int(s.recv(3).decode())
-                    responseUsers = s.recv(responseUsersLength).decode()
-                    if responseUsers == 'finished':
-                        s.send('008received'.encode())
-                        break
-                    print(responseUsers)
-                    s.send('008continue'.encode())
-                continue
 
 
 

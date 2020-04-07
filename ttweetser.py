@@ -123,14 +123,14 @@ def threaded_client(connection, user):
          for user in users.keys():
             lengthOfUser = str(len(user))
             lengthOfUser = lengthOfUser.zfill(3)
+            print(lengthOfUser + user)
             connection.send((lengthOfUser + user).encode())
             checkLength = int(connection.recv(3).decode())
             check = connection.recv(checkLength).decode()
+            print(check)
          checkLength = int(connection.recv(3).decode())
          check = connection.recv(checkLength).decode()
          connection.send('008finished'.encode())
-         checkLength = int(connection.recv(3).decode())
-         check = connection.recv(checkLength).decode()
          connection.send('020Ready for next input'.encode())
 
 
