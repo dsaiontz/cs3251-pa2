@@ -92,7 +92,7 @@ def Main():
         subscribeWasUsed = False
         timelineWasUsed = False
 
-        command = input('User Command: ')
+        command = input('')
 
         commandLen = str(len(command))
         commandLen = commandLen.zfill(3)
@@ -107,7 +107,7 @@ def Main():
                 print('hashtag illegal format, connection refused.')
                 s.send('008timeline'.encode())
                 continue
-            message = messageAndHashTag[0:messageAndHashTag.rfind('"')]
+            message = messageAndHashTag[0:messageAndHashTag.rfind('"') - 1]
             if len(message) > 150 or len(message) < 0:
                 print('message length illegal, connection refused.')
                 s.send('008timeline'.encode())
@@ -130,7 +130,7 @@ def Main():
                 continue
             s.send((str(commandLen) + command).encode())
 
-        if len(command) > 9 and command[0: 9] == ('subscribe'):
+        elif len(command) > 9 and command[0: 9] == ('subscribe'):
             if len(command) < 11:
                 print('hashtag illegal format, connection refused.')
                 s.send('008timeline'.encode())
@@ -148,7 +148,7 @@ def Main():
             subscribeWasUsed = True
             s.send((str(commandLen) + command).encode())
 
-        if len(command) > 11 and command[0: 11] == ('unsubscribe'):
+        elif len(command) > 11 and command[0: 11] == ('unsubscribe'):
             if len(command) < 12:
                 print('hashtag illegal format, connection refused.')
                 s.send('008timeline'.encode())
@@ -164,13 +164,13 @@ def Main():
                 continue
             s.send((str(commandLen) + command).encode())
 
-        if command == ('timeline'):
+        elif command == ('timeline'):
             for tweet in timeline:
                 print(tweet)
             timelineWasUsed = True
             s.send((str(commandLen) + command).encode())
 
-        if command == ('getusers'):
+        elif command == ('getusers'):
             getUsersWasUsed = True
             s.send((str(commandLen) + command).encode())
 
@@ -188,7 +188,7 @@ def Main():
 
 
 
-        if len(command) > 9 and command[0:9] == ('gettweets'):
+        elif len(command) > 9 and command[0:9] == ('gettweets'):
             if len(command) < 10:
                 print('error: username has wrong format, connection refused.')
                 s.send('timeline'.encode())
@@ -200,7 +200,7 @@ def Main():
             getTweetsWasUsed = True
             s.send((str(commandLen) + command).encode())
 
-        if command == ('exit'):
+        elif command == ('exit'):
             s.send((str(commandLen) + command).encode())
 
 if __name__ == '__main__':

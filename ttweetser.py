@@ -33,6 +33,7 @@ def threaded_client(connection, user):
          received = str(connection.recv(receivedLength).decode())
       except Exception:
          connection.send('020error: cause unknown')
+      print('Command: ' + received)
 
       username = user
 
@@ -75,6 +76,8 @@ def threaded_client(connection, user):
                      connectionS = users[userPerson][1] #connection of that user
                      connectionS.send(tweetContent.encode())
          connection.send('017operation success'.encode())
+         receivedLength = int(connection.recv(3).decode())
+         received = str(connection.recv(receivedLength).decode())
          connection.send('020Ready for next input'.encode())
 
 
