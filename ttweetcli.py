@@ -98,7 +98,7 @@ def Main():
                 responseLength = int(s.recv(3).decode())
                 response = s.recv(responseLength).decode()
                 while response != 'finished':
-                    print(repsonse)
+                    print(response)
                     responseLength = int(s.recv(3).decode())
                     response = s.recv(responseLength).decode()
                     s.send('008received'.encode())
@@ -107,6 +107,7 @@ def Main():
                 continue
             responseLength = int(s.recv(3).decode())  #response is entire thing?
             response = s.recv(responseLength).decode()
+            print(response)
             if response != 'Ready for next input':
                 print(response)
             if response == ('bye bye'):
@@ -170,6 +171,9 @@ def Main():
                     s.send('008timeline'.encode())
                     continue
                 s.send((str(commandLen) + command).encode())
+                ########ISSUE HERE SOMEWHERE
+                #s.send(str(commandLen).encode())
+                #s.send(command.encode())
 
             elif len(command) > 9 and command[0: 9] == ('subscribe'):
                 if len(command) < 11:
