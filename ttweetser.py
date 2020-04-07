@@ -84,12 +84,14 @@ def threaded_client(connection, user):
       #subscribe command
       elif received[0:9] == 'subscribe':
          tag = received[10:]
+         print(tag)
          if tag in hashtags.keys():
             hashtags[tag].append(username)
          else:
             hashtags[tag] = []
             hashtags[tag].append(username)
-         connection.sendall('020Ready for next input'.encode())
+         connection.send('017operation success'.encode())
+         connection.send('020Ready for next input'.encode())
 
 
 
@@ -103,13 +105,13 @@ def threaded_client(connection, user):
          else:
             if tag in hashtags.keys():
                hashtags[tag].remove(username)
-         connection.sendall('020Ready for next input'.encode())
+         connection.send('020Ready for next input'.encode())
 
 
 
       #timeline command
       elif received == 'timeline':
-         connection.sendall('020Ready for next input'.encode())
+         connection.send('020Ready for next input'.encode())
 
 
       #getusers command
@@ -118,15 +120,15 @@ def threaded_client(connection, user):
          for user in users.keys():
             lengthOfUser = str(len(user))
             lengthOfUser = lengthOfUser.zfill(3)
-            connection.sendall((lengthOfUser + user).encode())
-            check = connection.recv(3).decode()
-            check = connection.recv(check).decode()
-         check = connection.recv(3).decode()
-         check = connection.recv(check).decode()
-         connection.sendall('008finished'.encode())
-         check = connection.recv(3).decode()
-         check = connection.recv(check).decode()
-         connection.sendall('020Ready for next input'.encode())
+            connection.send((lengthOfUser + user).encode())
+            checkLength = int(connection.recv(3).decode())
+            check = connection.recv(checkLength).decode()
+         checkLength = int(connection.recv(3).decode())
+         check = connection.recv(checkLength).decode()
+         connection.send('008finished'.encode())
+         checkLength = int(connection.recv(3).decode())
+         check = connection.recv(checkLength).decode()
+         connection.send('020Ready for next input'.encode())
 
 
       #gettweets command
@@ -137,8 +139,8 @@ def threaded_client(connection, user):
             lengthOfTweet = str(len(ttweet))
             lengthOfTweet = lengthOfTweet.zfill(3)
             connection.send((lengthOfTweet + ttweet).encode())
-            answer = connection.recv(3).decode()
-            answer = connection.recv(answer).decode()
+            answerLength = connection.recv(3).decode()
+            answer = int(connection.recv(answerLength).decode())
 
          connection.send('020Ready for next input'.encode())
 
@@ -147,7 +149,7 @@ def threaded_client(connection, user):
             if username in hashtags[hashtag]:
                hashtags[hashtag].remove(username)
          del users[username]
-         connection.sendall('007bye bye'.encode())
+         connection.send('007bye bye'.encode())
          connection.close()
          return
 
@@ -171,9 +173,9 @@ while True:
 
    #if user exists
    if data in users:
-      connectionSocket.sendall('037username illegal, connection refused.'.encode())
+      connectionSocket.send('037username illegal, connection refused.'.encode())
    else:
-      connectionSocket.sendall('039username legal, connection established.'.encode())
+      connectionSocket.send('039username legal, connection established.'.encode())
       users[data] = ([], connectionSocket, addr, {})
 
       ip, port = str(addr[0]), str(addr[1])

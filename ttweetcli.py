@@ -92,7 +92,7 @@ def Main():
         subscribeWasUsed = False
         timelineWasUsed = False
 
-        command = input('')
+        command = input('User Command: ')
 
         commandLen = str(len(command))
         commandLen = commandLen.zfill(3)
@@ -119,7 +119,6 @@ def Main():
                 continue
             hashTags = hashTags[1:]
             allHashTags = hashTags.split('#')
-            print('HashTags: ' + allHashTags)
             shouldExitCommand = False
             for hashTag in allHashTags:
                 if len(hashTag) > 14:
