@@ -175,6 +175,9 @@ def Main():
                     s.send('008timeline'.encode())
                     continue
                 s.send((str(commandLen) + command).encode())
+                ########ISSUE HERE SOMEWHERE
+                #s.send(str(commandLen).encode())
+                #s.send(command.encode())
 
             elif len(command) > 9 and command[0: 9] == ('subscribe'):
                 if len(command) < 11:
