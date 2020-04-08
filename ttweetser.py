@@ -25,8 +25,9 @@ print('The server is ready to receive')
 s.listen(5)
 
 def threaded_client(connection, user):
+   connection.send('020Ready for next input'.encode())
    while True:
-      connection.send('020Ready for next input'.encode())
+      #connection.send('020Ready for next input'.encode())
       #receive message from client
       try:
          receivedLength = int(connection.recv(3).decode())
@@ -43,13 +44,13 @@ def threaded_client(connection, user):
          #supposed to get tweet between quotations
          tweetContent = received[received.find('"'):]
          afterMessage = received[received.rfind('"'):]
-         hashtagFull = afterMessage[afterMessage.find('#'):]
+         hashtagFull = tweetContent[tweetContent.rfind('"') + 2:]
          hashtagList = []
          currentHashtag = ''
          i = 0
          for char in hashtagFull:
             if char == '#':
-               if len(hashtagList) == 0:
+               if len(currentHashtag) == 0:
                   currentHashtag = currentHashtag + char
                else:
                   hashtagList.append(currentHashtag)
@@ -71,10 +72,13 @@ def threaded_client(connection, user):
          #send tweet to clients subscribed to each mentioned hashtag
          usersSentTo = []
          for tag in hashtagList:
-            if tag in hashtags:
+            if tag in hashtags.keys():
                for userPerson in hashtags[tag]:
                   if userPerson != username and userPerson not in usersSentTo:
                      connectionS = users[userPerson][1] #connection of that user
+                     print(tweetContent)
+                     print("hi")
+                     print(userPerson)
                      connectionS.send(tweetContent.encode())
                      connectionS.send('020Ready for next input'.encode())
                      usersSentTo.append(userPerson)
