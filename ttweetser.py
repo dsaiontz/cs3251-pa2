@@ -49,7 +49,7 @@ def threaded_client(connection, user):
          i = 0
          for char in hashtagFull:
             if char == '#':
-               if len(hashtagList) == 0:
+               if i == 0:
                   currentHashtag = currentHashtag + char
                else:
                   hashtagList.append(currentHashtag)
@@ -88,6 +88,19 @@ def threaded_client(connection, user):
       elif received[0:9] == 'subscribe':
          tag = received[10:]
          print(tag)
+         count = 0
+         for tag in hashtags:
+            if user in hashtags[tag]:
+               count = count + 1
+               if count == 3:
+                  toSend = 'operation failed: sub ' + tag + ' failed, already exists or exceeds 3 limitation'
+                  toSendLen = str(len(toSend))
+                  toSendLen.zfill(3)
+                  connection.send((toSendLen + toSend).encode())
+                  receivedLength = int(connection.recv(3).decode())
+                  received = str(connection.recv(receivedLength).decode())
+                  connection.send('020Ready for next input'.encode())
+                  continue
          if tag in hashtags.keys():
             hashtags[tag].append(user)
          else:
