@@ -8,7 +8,9 @@
 
 Initially, we decided to divide the work with having David working on ttweetcli.py and Jackson work on ttweetser.py, so as to avoid stepping on each other's work and creating merge conflicts. We discussed, at a high level, how everything should work as well as how responses should be formatted. Once we had a baseline with all of the commands in each file, we worked together to squash bugs, each one taking on a different bug. We discussed how to fix the various bugs using Bluejeans, sharing our screens to give a better idea to our partner different ideas for how to deal with a bug.
 
-Once an initial baseline for the commands was implemented, David implemented a solution to send the length of the message in the first 3 bytes of the message to keep the socket from attempting to get more bytes than are available in the pipeline, and Jackson implemented multi-threading in the client, using the existing code and separating it into 2 different threads to support immediate arrival of subscribed tweets from the server.
+Once an initial baseline for the commands was implemented, David implemented a solution to send the length of the message in the first 3 bytes of the message to keep the socket from attempting to get more bytes than are available in the pipeline, and Jackson implemented multi-threading in the client, using the existing code in the client and separating it into 2 different threads to support immediate arrival of subscribed tweets from the server. One thread is used for receiving messages from the server, and the other thread is used for sending messages to the server
+
+After this, we both worked together to squash any bugs we found. 
 
 ---
 

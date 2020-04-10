@@ -87,6 +87,7 @@ def Main():
 
 
 
+    #thread to receive messages from the server
     def clientReceiveThread():
         global timeline
         global getTweetsWasUsed
@@ -95,7 +96,7 @@ def Main():
         global timelineWasUsed
 
         while True:
-            if getUsersWasUsed:
+            if getUsersWasUsed: #check if getusers was used, it stays in a loop of receiving users until it receives the finished message, at which point it returns to usual activity
                 responseLength = int(s.recv(3).decode())
                 response = s.recv(responseLength).decode()
                 while response != 'finished':
@@ -105,24 +106,24 @@ def Main():
             if getUsersWasUsed:
                 getUsersWasUsed = False
                 continue
-            responseLength = int(s.recv(3).decode())  #response is entire thing?
-            response = s.recv(responseLength).decode()
+            responseLength = int(s.recv(3).decode())  #we receive 3 bytes first for each message, which represents the length of the message being received
+            response = s.recv(responseLength).decode() #we retrieve one message at a time from the pipeline
             if response != 'Ready for next input':
                 print(response)
             if response == ('bye bye'):
-                return
-            if response != ('Ready for next input'): ###while
+                return #have to return for both threads in order to fully end the client and gracefully exit
+            #a large check to effectively see if the server is ready for a new input or if the client is receiving a tweet from a subscription
+            if response != ('Ready for next input'): 
                 if response != 'operation success' and response.find('operation failed') != 0 and not getTweetsWasUsed and not getUsersWasUsed and not subscribeWasUsed and (not response == ('bye bye') or not response == ('message length illegal, connection refused.') or not response == ('hashtag illegal format, connection refused.') or not response == ('error: username has wrong format, connection refused.')):
-                    response = response[0:response.find(' ')] + ':' + response[response.find(' '):]
+                    response = response[0:response.find(' ')] + ':' + response[response.find(' '):] #formats the tweet so that it is ready to be output with the timeline command
                     timeline.append(response)
-                #response = s.recv(512).decode()
-                #print(response)
                 continue
             getTweetsWasUsed = False
             getUsersWasUsed = False
             subscribeWasUsed = False
             timelineWasUsed = False
 
+    #thread for sending messages to the server
     def clientSendingThread():
         global timeline
         global getTweetsWasUsed
@@ -130,20 +131,24 @@ def Main():
         global subscribeWasUsed
         global timelineWasUsed
 
+        #the number of active subscriptions we have is checked client side
         numSubscriptions = 0
 
 
         while True:
 
-            command = input('')
+            command = input('') #receive a command from the user
 
             commandLen = str(len(command))
-            commandLen = commandLen.zfill(3)
+            commandLen = commandLen.zfill(3) #the length of the command, which we append to the front when sent
 
+            ###most error checking is done client side as well, such as parsing the message
+
+            #tweet command
             if len(command) > 5 and command[0: 5] == ('tweet'):
                 if len(command) < 7:
                     print('message length illegal, connection refused.')
-                    s.send('005error'.encode())
+                    s.send('005error'.encode()) #hard-coded lengths for hard-coded messages
                     continue
                 messageAndHashTag = command[6:]
                 if messageAndHashTag.find('\"') == messageAndHashTag.rfind('\"'):
@@ -151,7 +156,7 @@ def Main():
                     s.send('005error'.encode())
                     continue
                 message = messageAndHashTag[0:messageAndHashTag.rfind('\"') + 1]
-                if len(message) > 152:
+                if len(message) > 152: #length 150 message + 2 quotes
                     print('message length illegal, connection refused.')
                     s.send('005error'.encode())
                     continue
@@ -165,7 +170,7 @@ def Main():
                     s.send('005error'.encode())
                     continue
                 hashTags = hashTags[1:]
-                allHashTags = hashTags.split('#')
+                allHashTags = hashTags.split('#') #more easily check the hashtags for correct formatting
                 shouldExitCommand = False
                 for hashTag in allHashTags:
                     if len(hashTag) > 14:
@@ -177,6 +182,7 @@ def Main():
                     continue
                 s.send((str(commandLen) + command).encode())
 
+            #subscribe command
             elif len(command) > 9 and command[0: 9] == ('subscribe'):
                 if len(command) < 11:
                     print('hashtag illegal format, connection refused.')
@@ -199,6 +205,7 @@ def Main():
                 s.send((str(commandLen) + command).encode())
                 numSubscriptions = numSubscriptions + 1
 
+            #unsubscribe command
             elif len(command) > 11 and command[0: 11] == ('unsubscribe'):
                 if len(command) < 12:
                     print('hashtag illegal format, connection refused.')
@@ -215,19 +222,21 @@ def Main():
                     continue
                 s.send((str(commandLen) + command).encode())
 
+            #timeline command
             elif command == ('timeline'):
                 for tweet in timeline:
                     print(tweet)
                 timelineWasUsed = True
                 s.send((str(commandLen) + command).encode())
 
+            #getusers command
             elif command == ('getusers'):
                 getUsersWasUsed = True
                 s.send((str(commandLen) + command).encode())
 
 
 
-
+            #gettweets command
             elif len(command) > 9 and command[0:9] == ('gettweets'):
                 if len(command) < 10:
                     print('error: username has wrong format, connection refused.')
@@ -240,13 +249,15 @@ def Main():
                 getTweetsWasUsed = True
                 s.send((str(commandLen) + command).encode())
 
+            #exit
             elif command == ('exit'):
-                newCommand = command + ' ' + username
+                newCommand = command + ' ' + username #also send the username when exitting to make sure we logout the correct user
                 newCommandLen = str(int(usernameLen) + int(commandLen) + 1)
                 newCommandLen = newCommandLen.zfill(3)
                 s.send((newCommandLen + newCommand).encode())
-                return
+                return #have to return for both threads in order to fully end the client and gracefully exit
 
+    #how we create 2 separate threads, one for receiving and one for sending messages
     t1 = threading.Thread(target=clientReceiveThread)
     t2 = threading.Thread(target=clientSendingThread)
     t1.start()
@@ -259,50 +270,3 @@ def Main():
 
 if __name__ == '__main__':
     Main()
-    #t1 = threading.Thread(target=clientReceiveThread())
-    #t2 = threading.Thread(target=clientSendingThread())
-
-#based on following code from https://pymotw.com/3/socket/tcp.html
-# import socket
-# import sys
-
-# # Create a TCP/IP socket
-# sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# # Connect the socket to the port where the server is listening
-# server_address = ('localhost', 10000)
-# print('connecting to {} port {}'.format(*server_address))
-# sock.connect(server_address)
-
-# try:
-
-#     # Send data
-#     message = b'This is the message.  It will be repeated.'
-#     print('sending {!r}'.format(message))
-#     sock.sendall(message)
-
-#     # Look for the response
-#     amount_received = 0
-#     amount_expected = len(message)
-
-#     while amount_received < amount_expected:
-#         data = sock.recv(16)
-#         amount_received += len(data)
-#         print('received {!r}'.format(data))
-
-# finally:
-#     print('closing socket')
-#     sock.close()
-
-#also based on following code found at https://realpython.com/python-sockets/#echo-client
-# import socket
-
-# HOST = '127.0.0.1'  # The server's hostname or IP address
-# PORT = 65432        # The port used by the server
-
-# with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-#     s.connect((HOST, PORT))
-#     s.sendall(b'Hello, world')
-#     data = s.recv(1024)
-
-# print('Received', repr(data))
