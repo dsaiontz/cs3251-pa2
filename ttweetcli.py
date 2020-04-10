@@ -133,6 +133,8 @@ def Main():
         global subscribeWasUsed
         global timelineWasUsed
 
+        numSubscriptions = 0
+
 
         while True:
 
@@ -184,6 +186,10 @@ def Main():
                     s.send('005error'.encode())
                     continue
                 hashTag = command[10:]
+                if numSubscriptions == 3:
+                    print('operation failed: sub ' + hashTag + " failed, already exists or exceeds 3 limitation")
+                    s.send('005error'.encode())
+                    continue
                 if len(hashTag) == 0 or not hashTag[0] == ('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
                     print('hashtag illegal format, connection refused.')
                     s.send('005error'.encode())
@@ -194,6 +200,7 @@ def Main():
                     continue
                 subscribeWasUsed = True
                 s.send((str(commandLen) + command).encode())
+                numSubscriptions = numSubscriptions + 1
 
             elif len(command) > 11 and command[0: 11] == ('unsubscribe'):
                 if len(command) < 12:
