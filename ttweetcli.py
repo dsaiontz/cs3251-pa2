@@ -110,9 +110,10 @@ def Main():
             if response != 'Ready for next input':
                 print(response)
             if response == ('bye bye'):
-                sys.exit(0)
+                return
             if response != ('Ready for next input'): ###while
                 if response != 'operation success' and not getTweetsWasUsed and not getUsersWasUsed and not subscribeWasUsed and (not response == ('bye bye') or not response == ('message length illegal, connection refused.') or not response == ('hashtag illegal format, connection refused.') or not response == ('error: username has wrong format, connection refused.')):
+                    response = response[0:response.find(' ')] + ':' + response[response.find(' '):]
                     timeline.append(response)
                 #response = s.recv(512).decode()
                 #print(response)
@@ -151,8 +152,12 @@ def Main():
                     s.send('005error'.encode())
                     continue
                 message = messageAndHashTag[0:messageAndHashTag.rfind('\"') + 1]
-                if len(message) > 152 or len(message) < 0:
+                if len(message) > 152:
                     print('message length illegal, connection refused.')
+                    s.send('005error'.encode())
+                    continue
+                if len(message) < 3:
+                    print('message format illegal.')
                     s.send('005error'.encode())
                     continue
                 hashTags = messageAndHashTag[len(message):]
@@ -232,12 +237,17 @@ def Main():
                 s.send((str(commandLen) + command).encode())
 
             elif command == ('exit'):
-                s.send((str(commandLen) + command).encode())
+                newCommand = command + ' ' + username
+                newCommandLen = str(int(usernameLen) + int(commandLen) + 1)
+                newCommandLen = newCommandLen.zfill(3)
+                s.send((newCommandLen + newCommand).encode())
+                return
 
     t1 = threading.Thread(target=clientReceiveThread)
     t2 = threading.Thread(target=clientSendingThread)
     t1.start()
     t2.start()
+
 
 
 
