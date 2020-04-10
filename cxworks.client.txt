@@ -1,0 +1,191 @@
+username illegal, connection refused.
+
+user cxworks stdin command: tweet "" #hash
+
+user cxworks stdin command: tweet "message" #hash
+
+user cxworks stdin command: tweet "message message" #hash
+
+user cxworks stdin command: subscribe #echo
+
+user cxworks stdin command: tweet " " #echo
+
+user cxworks stdin command: tweet "cs3251" #echo
+
+user cxworks stdin command: tweet "fsadfsdfd" #echo
+
+user cxworks stdin command: tweet "empty message" #echo
+
+user cxworks stdin command: tweet "message" #echo
+
+user cxworks stdin command: tweet "Empty Message" #echo
+
+user cxworks stdin command: tweet "d" #echo
+
+user cxworks stdin command: tweet "u" #echo
+
+user cxworks stdin command: tweet "download" #echo
+
+user cxworks stdin command: tweet "~" #echo
+
+user cxworks stdin command: tweet "!" #echo
+
+user cxworks stdin command: tweet "@" #echo
+
+user cxworks stdin command: tweet "#" #echo
+
+user cxworks stdin command: tweet "$" #echo
+
+user cxworks stdin command: tweet "%" #echo
+
+user cxworks stdin command: tweet "^" #echo
+
+user cxworks stdin command: tweet "&" #echo
+
+user cxworks stdin command: tweet "*" #echo
+
+user cxworks stdin command: tweet "(" #echo
+
+user cxworks stdin command: tweet ")" #echo
+
+user cxworks stdin command: tweet "_" #echo
+
+user cxworks stdin command: tweet "+" #echo
+
+user cxworks stdin command: tweet "-" #echo
+
+user cxworks stdin command: tweet "=" #echo
+
+user cxworks stdin command: tweet "[" #echo
+
+user cxworks stdin command: tweet "]" #echo
+
+user cxworks stdin command: tweet "{" #echo
+
+user cxworks stdin command: tweet "}" #echo
+
+user cxworks stdin command: tweet ";" #echo
+
+user cxworks stdin command: tweet ":" #echo
+
+user cxworks stdin command: tweet "." #echo
+
+user cxworks stdin command: tweet "," #echo
+
+user cxworks stdin command: tweet "<" #echo
+
+user cxworks stdin command: tweet ">" #echo
+
+user cxworks stdin command: tweet "/" #echo
+
+user cxworks stdin command: tweet "?" #echo
+
+user cxworks stdin command: tweet "|" #echo
+
+user cxworks stdin command: tweet "\" #echo
+
+user cxworks stdin command: tweet "\0" #echo
+
+user cxworks stdin command: tweet "149aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" #echo
+
+user cxworks stdin command: tweet "                                                                                                                                                     " #echo
+
+user cxworks stdin command: tweet "150aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" #echo
+
+user cxworks stdin command: tweet "                                                                                                                                                      " #echo
+
+user cxworks stdin command: tweet "151aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" #echo
+
+user cxworks stdin command: unsubscribe #echo
+
+user cxworks stdin command: tweet " " #echo
+
+user cxworks stdin command: tweet "cs3251" #echo
+
+user cxworks stdin command: tweet "fsadfsdfd" #echo
+
+user cxworks stdin command: tweet "empty message" #echo
+
+user cxworks stdin command: tweet "message" #echo
+
+user cxworks stdin command: tweet "Empty Message" #echo
+
+user cxworks stdin command: tweet "d" #echo
+
+user cxworks stdin command: tweet "u" #echo
+
+user cxworks stdin command: tweet "download" #echo
+
+user cxworks stdin command: tweet "~" #echo
+
+user cxworks stdin command: tweet "!" #echo
+
+user cxworks stdin command: tweet "@" #echo
+
+user cxworks stdin command: tweet "#" #echo
+
+user cxworks stdin command: tweet "$" #echo
+
+user cxworks stdin command: tweet "%" #echo
+
+user cxworks stdin command: tweet "^" #echo
+
+user cxworks stdin command: tweet "&" #echo
+
+user cxworks stdin command: tweet "*" #echo
+
+user cxworks stdin command: tweet "(" #echo
+
+user cxworks stdin command: tweet ")" #echo
+
+user cxworks stdin command: tweet "_" #echo
+
+user cxworks stdin command: tweet "+" #echo
+
+user cxworks stdin command: tweet "-" #echo
+
+user cxworks stdin command: tweet "=" #echo
+
+user cxworks stdin command: tweet "[" #echo
+
+user cxworks stdin command: tweet "]" #echo
+
+user cxworks stdin command: tweet "{" #echo
+
+user cxworks stdin command: tweet "}" #echo
+
+user cxworks stdin command: tweet ";" #echo
+
+user cxworks stdin command: tweet ":" #echo
+
+user cxworks stdin command: tweet "." #echo
+
+user cxworks stdin command: tweet "," #echo
+
+user cxworks stdin command: tweet "<" #echo
+
+user cxworks stdin command: tweet ">" #echo
+
+user cxworks stdin command: tweet "/" #echo
+
+user cxworks stdin command: tweet "?" #echo
+
+user cxworks stdin command: tweet "|" #echo
+
+user cxworks stdin command: tweet "\" #echo
+
+user cxworks stdin command: tweet "\0" #echo
+
+user cxworks stdin command: tweet "149aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" #echo
+
+user cxworks stdin command: tweet "                                                                                                                                                     " #echo
+
+user cxworks stdin command: tweet "150aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" #echo
+
+user cxworks stdin command: tweet "                                                                                                                                                      " #echo
+
+user cxworks stdin command: tweet "151aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" #echo
+
+user cxworks stdin command: timeline
+
+user cxworks stdin command: exit
