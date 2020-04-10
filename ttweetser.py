@@ -49,7 +49,7 @@ def threaded_client(connection, user):
          i = 0
          for char in hashtagFull:
             if char == '#':
-               if len(hashtagList) == 0:
+               if i == 0:
                   currentHashtag = currentHashtag + char
                else:
                   hashtagList.append(currentHashtag)
@@ -61,6 +61,7 @@ def threaded_client(connection, user):
                   hashtagList.append(currentHashtag)
                else:
                   i = i + 1
+         print(hashtagList)
          #process tweet
          tweetContent = user + ' ' + tweetContent
          users[user][0].append(tweetContent)
@@ -120,7 +121,7 @@ def threaded_client(connection, user):
       #timeline command
       elif received == 'timeline':
          connection.send('020Ready for next input'.encode())
-      
+
       elif received == 'error':
          connection.send('020Ready for next input'.encode())
 
