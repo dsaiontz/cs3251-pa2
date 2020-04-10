@@ -25,7 +25,6 @@ print('The server is ready to receive')
 s.listen(5)
 
 def threaded_client(connection, user):
-   username = user
    global hashtags
    global users
    numSubbed = 0
@@ -153,8 +152,6 @@ def threaded_client(connection, user):
             lengthOfTweet = str(len(ttweet))
             lengthOfTweet = lengthOfTweet.zfill(3)
             connection.send((lengthOfTweet + ttweet).encode())
-            answerLength = int(connection.recv(3).decode())
-            answer = connection.recv(answerLength).decode()
 
          connection.send('020Ready for next input'.encode())
 
