@@ -117,7 +117,6 @@ def Main():
                     timeline.append(response)
                 #response = s.recv(512).decode()
                 #print(response)
-                s.send("008continue".encode())
                 continue
             getTweetsWasUsed = False
             getUsersWasUsed = False

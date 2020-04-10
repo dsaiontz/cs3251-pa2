@@ -80,8 +80,6 @@ def threaded_client(connection, user):
                   if userPerson not in usersSentTo:
                      connectionS = users[userPerson][1] #connection of that user
                      connectionS.send(tweetContent.encode())
-                     receivedLength = int(connectionS.recv(3).decode())
-                     received = str(connectionS.recv(receivedLength).decode())
                      connectionS.send('020Ready for next input'.encode())
                      usersSentTo.append(userPerson)
          connection.send('020Ready for next input'.encode())
@@ -100,8 +98,6 @@ def threaded_client(connection, user):
             toSendLen = str(len(toSend))
             toSendLen.zfill(3)
             connection.send((toSendLen + toSend).encode())
-            receivedLength = int(connection.recv(3).decode())
-            received = str(connection.recv(receivedLength).decode())
             connection.send('020Ready for next input'.encode())
             continue
          if tag in hashtags.keys():
@@ -110,8 +106,6 @@ def threaded_client(connection, user):
             hashtags[tag] = []
             hashtags[tag].append(user)
          connection.send('017operation success'.encode())
-         receivedLength = int(connection.recv(3).decode())
-         received = str(connection.recv(receivedLength).decode())
          connection.send('020Ready for next input'.encode())
          numSubbed = numSubbed + 1
 
@@ -128,8 +122,6 @@ def threaded_client(connection, user):
             if tag in hashtags.keys():
                hashtags[tag].remove(user)
          connection.send('017operation success'.encode())
-         receivedLength = int(connection.recv(3).decode())
-         received = str(connection.recv(receivedLength).decode())
          connection.send('020Ready for next input'.encode())
 
 
