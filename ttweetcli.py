@@ -112,7 +112,7 @@ def Main():
             if response == ('bye bye'):
                 return
             if response != ('Ready for next input'): ###while
-                if response != 'operation success' and not getTweetsWasUsed and not getUsersWasUsed and not subscribeWasUsed and (not response == ('bye bye') or not response == ('message length illegal, connection refused.') or not response == ('hashtag illegal format, connection refused.') or not response == ('error: username has wrong format, connection refused.')):
+                if response != 'operation success' and response.find('operation failed') != 0 and not getTweetsWasUsed and not getUsersWasUsed and not subscribeWasUsed and (not response == ('bye bye') or not response == ('message length illegal, connection refused.') or not response == ('hashtag illegal format, connection refused.') or not response == ('error: username has wrong format, connection refused.')):
                     response = response[0:response.find(' ')] + ':' + response[response.find(' '):]
                     timeline.append(response)
                 #response = s.recv(512).decode()
@@ -123,8 +123,6 @@ def Main():
             getUsersWasUsed = False
             subscribeWasUsed = False
             timelineWasUsed = False
-
-
 
     def clientSendingThread():
         global timeline
