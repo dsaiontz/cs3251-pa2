@@ -11,8 +11,6 @@ users = {}
 #key: hashtag, value: [usernames]
 hashtags = {}
 
-
-
 #port number for server
 port = int(sys.argv[1])
 
@@ -24,10 +22,14 @@ s.bind(('', port))
 print('The server is ready to receive')
 s.listen(5)
 
+
+#thread function
 def threaded_client(connection, user):
    global hashtags
    global users
    numSubbed = 0
+
+   #while loop starts and runs for entire connection period
    while True:
       connection.send('020Ready for next input'.encode())
       #receive message from client
@@ -49,6 +51,8 @@ def threaded_client(connection, user):
          hashtagList = []
          currentHashtag = ''
          i = 0
+
+         #puts each individual hashtag into hashtagList
          for char in hashtagFull:
             if char == '#':
                if i == 0:
@@ -64,6 +68,7 @@ def threaded_client(connection, user):
                else:
                   i = i + 1
          print(str(hashtagList))
+
          #process tweet
          tweetContent = user + ' ' + tweetContent
          users[user][0].append(tweetContent)
@@ -71,6 +76,7 @@ def threaded_client(connection, user):
          lengthOfContent = lengthOfContent.zfill(3)
          tweetContent = lengthOfContent + tweetContent
          hashtagList.append('#ALL')
+
          #send tweet to clients subscribed to each mentioned hashtag
          usersSentTo = []
          for tag in hashtagList:
@@ -81,10 +87,9 @@ def threaded_client(connection, user):
                      connectionS.send(tweetContent.encode())
                      connectionS.send('020Ready for next input'.encode())
                      usersSentTo.append(userPerson)
+
+         #ends tweet command
          connection.send('020Ready for next input'.encode())
-
-
-
 
 
       #subscribe command
@@ -92,6 +97,8 @@ def threaded_client(connection, user):
          tag = received[10:]
          print(tag)
          count = 0
+
+         #if already 3 subscriptions, don't subscribe
          if numSubbed == 3:
             toSend = 'operation failed: sub ' + tag + ' failed, already exists or exceeds 3 limitation'
             toSendLen = str(len(toSend))
@@ -107,7 +114,6 @@ def threaded_client(connection, user):
          connection.send('017operation success'.encode())
          connection.send('020Ready for next input'.encode())
          numSubbed = numSubbed + 1
-
 
 
       #unsubscribe command
@@ -155,6 +161,8 @@ def threaded_client(connection, user):
 
          connection.send('020Ready for next input'.encode())
 
+
+      #exit command
       elif received[0:4] == 'exit':
          userExitting = received[5:]
          for hashtag in hashtags.keys():
@@ -164,7 +172,6 @@ def threaded_client(connection, user):
          connection.send('007bye bye'.encode())
          connection.close()
          return
-
 
 
 
@@ -192,65 +199,8 @@ while True:
       ip, port = str(addr[0]), str(addr[1])
       print("connected with " + ip + ":" + port + ', ' + data)
 
-      start_new_thread(threaded_client, (connectionSocket, data)) ###may not be able to have data here
+      #starts new thread with the client
+      start_new_thread(threaded_client, (connectionSocket, data))
 
 s.close()
 
-
-#if __name__ == '__main__':
-#   Main()
-
-#based on following code from https://pymotw.com/3/socket/tcp.html
-# import socket
-# import sys
-
-# # Create a TCP/IP socket
-# sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# # Bind the socket to the port
-# server_address = ('localhost', 10000)
-# print('starting up on {} port {}'.format(*server_address))
-# sock.bind(server_address)
-
-# # Listen for incoming connections
-# sock.listen(1)
-
-# while True:
-#     # Wait for a connection
-#     print('waiting for a connection')
-#     connection, client_address = sock.accept()
-#     try:
-#         print('connection from', client_address)
-
-#         # Receive the data in small chunks and retransmit it
-#         while True:
-#             data = connection.recv(16)
-#             print('received {!r}'.format(data))
-#             if data:
-#                 print('sending data back to the client')
-#                 connection.sendall(data)
-#             else:
-#                 print('no data from', client_address)
-#                 break
-
-#     finally:
-#         # Clean up the connection
-#         connection.close()
-
-#also based on following code found at https://realpython.com/python-sockets/#echo-server
-# import socket
-
-# HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-# PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
-
-# with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-#     s.bind((HOST, PORT))
-#     s.listen()
-#     conn, addr = s.accept()
-#     with conn:
-#         print('Connected by', addr)
-#         while True:
-#             data = conn.recv(1024)
-#             if not data:
-#                 break
-#             conn.sendall(data)
