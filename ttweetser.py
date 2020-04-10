@@ -67,7 +67,6 @@ def threaded_client(connection, user):
                   hashtagList.append(currentHashtag)
                else:
                   i = i + 1
-         print(str(hashtagList))
 
          #process tweet
          tweetContent = user + ' ' + tweetContent

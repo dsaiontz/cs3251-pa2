@@ -10,7 +10,7 @@ Initially, we decided to divide the work with having David working on ttweetcli.
 
 Once an initial baseline for the commands was implemented, David implemented a solution to send the length of the message in the first 3 bytes of the message to keep the socket from attempting to get more bytes than are available in the pipeline, and Jackson implemented multi-threading in the client, using the existing code in the client and separating it into 2 different threads to support immediate arrival of subscribed tweets from the server. One thread is used for receiving messages from the server, and the other thread is used for sending messages to the server
 
-After this, we both worked together to squash any bugs we found. 
+After this, we both worked together to squash any bugs we found as well as added documentation to the ttweetcli.py and ttweetser.py.
 
 ---
 

@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "ttweetser.py", line 21, in <module>
-    s.bind(('', port))
-OSError: [Errno 48] Address already in use
