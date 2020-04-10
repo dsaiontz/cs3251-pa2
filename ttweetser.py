@@ -25,6 +25,10 @@ print('The server is ready to receive')
 s.listen(5)
 
 def threaded_client(connection, user):
+   username = user
+   global hashtags
+   global users
+   numSubbed = 0
    while True:
       connection.send('020Ready for next input'.encode())
       #receive message from client
@@ -32,10 +36,9 @@ def threaded_client(connection, user):
          receivedLength = int(connection.recv(3).decode())
          received = str(connection.recv(receivedLength).decode())
       except Exception:
-         connection.send('020error: cause unknown')
+         connection.send('020error: cause unknown'.encode())
       print('Command: ' + received)
 
-      user = user
 
       #Tweet command
       if received[0:5] == "tweet":   #tweet
@@ -61,7 +64,7 @@ def threaded_client(connection, user):
                   hashtagList.append(currentHashtag)
                else:
                   i = i + 1
-         print(hashtagList)
+         print(str(hashtagList))
          #process tweet
          tweetContent = user + ' ' + tweetContent
          users[user][0].append(tweetContent)
@@ -77,6 +80,8 @@ def threaded_client(connection, user):
                   if userPerson not in usersSentTo:
                      connectionS = users[userPerson][1] #connection of that user
                      connectionS.send(tweetContent.encode())
+                     receivedLength = int(connectionS.recv(3).decode())
+                     received = str(connectionS.recv(receivedLength).decode())
                      connectionS.send('020Ready for next input'.encode())
                      usersSentTo.append(userPerson)
          connection.send('020Ready for next input'.encode())
@@ -89,6 +94,16 @@ def threaded_client(connection, user):
       elif received[0:9] == 'subscribe':
          tag = received[10:]
          print(tag)
+         count = 0
+         if numSubbed == 3:
+            toSend = 'operation failed: sub ' + tag + ' failed, already exists or exceeds 3 limitation'
+            toSendLen = str(len(toSend))
+            toSendLen.zfill(3)
+            connection.send((toSendLen + toSend).encode())
+            receivedLength = int(connection.recv(3).decode())
+            received = str(connection.recv(receivedLength).decode())
+            connection.send('020Ready for next input'.encode())
+            continue
          if tag in hashtags.keys():
             hashtags[tag].append(user)
          else:
@@ -98,6 +113,7 @@ def threaded_client(connection, user):
          receivedLength = int(connection.recv(3).decode())
          received = str(connection.recv(receivedLength).decode())
          connection.send('020Ready for next input'.encode())
+         numSubbed = numSubbed + 1
 
 
 
@@ -165,7 +181,6 @@ def threaded_client(connection, user):
 
 #a forever loop until client wants to exit
 while True:
-
    #establish connection with client
    #addr is address bound to socket on other end of connection
    #connectionSocket is new socket object usable to send and receive data
