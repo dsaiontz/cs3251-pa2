@@ -75,7 +75,7 @@ def Main():
         print(data)
         return
 
-    if data == (''):
+    if data == ('') or data is None:
         print('error: server unable to be reached')
         return
 
@@ -110,7 +110,7 @@ def Main():
             if response != 'Ready for next input':
                 print(response)
             if response == ('bye bye'):
-                return
+                sys.exit(0)
             if response != ('Ready for next input'): ###while
                 if response != 'operation success' and not getTweetsWasUsed and not getUsersWasUsed and not subscribeWasUsed and (not response == ('bye bye') or not response == ('message length illegal, connection refused.') or not response == ('hashtag illegal format, connection refused.') or not response == ('error: username has wrong format, connection refused.')):
                     timeline.append(response)
@@ -143,22 +143,22 @@ def Main():
             if len(command) > 5 and command[0: 5] == ('tweet'):
                 if len(command) < 7:
                     print('message length illegal, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
                 messageAndHashTag = command[6:]
-                if messageAndHashTag.find('"') == messageAndHashTag.rfind('"'):
+                if messageAndHashTag.find('\"') == messageAndHashTag.rfind('\"'):
                     print('hashtag illegal format, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
-                message = messageAndHashTag[0:messageAndHashTag.rfind('"') - 1]
-                if len(message) > 150 or len(message) < 0:
+                message = messageAndHashTag[0:messageAndHashTag.rfind('\"') + 1]
+                if len(message) > 152 or len(message) < 0:
                     print('message length illegal, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
-                hashTags = messageAndHashTag[:messageAndHashTag.rfind('"') + 2]
+                hashTags = messageAndHashTag[len(message):]
                 if len(hashTags) == 0 or hashTags.find('##') > -1 or hashTags.count('#') > 5 or hashTags.find('#ALL') > -1:
                     print('hashtag illegal format, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
                 hashTags = hashTags[1:]
                 allHashTags = hashTags.split('#')
@@ -169,23 +169,23 @@ def Main():
                         shouldExitCommand = True
                         break
                 if shouldExitCommand:
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
                 s.send((str(commandLen) + command).encode())
 
             elif len(command) > 9 and command[0: 9] == ('subscribe'):
                 if len(command) < 11:
                     print('hashtag illegal format, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
                 hashTag = command[10:]
                 if len(hashTag) == 0 or not hashTag[0] == ('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
                     print('hashtag illegal format, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
                 if len(hashTag) > 15:
                     print('hashtag illegal format, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
                 subscribeWasUsed = True
                 s.send((str(commandLen) + command).encode())
@@ -193,16 +193,16 @@ def Main():
             elif len(command) > 11 and command[0: 11] == ('unsubscribe'):
                 if len(command) < 12:
                     print('hashtag illegal format, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
                 hashTag = command[12:]
                 if len(hashTag) == 0 or not hashTag[0] == ('#') or hashTag.find('##') > -1 or hashTag.count('#') > 1:
                     print('hashtag illegal format, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
                 if len(hashTag) > 15:
                     print('hashtag illegal format, connection refused.')
-                    s.send('008timeline'.encode())
+                    s.send('005error'.encode())
                     continue
                 s.send((str(commandLen) + command).encode())
 
