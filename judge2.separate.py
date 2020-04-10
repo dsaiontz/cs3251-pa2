@@ -342,7 +342,7 @@ class judge:
         return p
 
 
-    def runTest(self, type='p3', port=13000, srv = True):
+    def runTest(self, type='p3', port=13003, srv = True):
         client_names={'j':'ttweetcli','p':'ttweetcli.py','c':'ttweetcli', 'jar': 'ttweetcli.jar'}
         srv_names = {'j': 'ttweetser', 'p': 'ttweetser.py', 'c': 'ttweetser', 'jar': 'ttweetser.jar'}
         for f in os.listdir("."):
@@ -379,4 +379,4 @@ class judge:
 if __name__ == '__main__':
     import sys
     args = sys.argv
-    judge().runTest(args[1],  13002, True)
+    judge().runTest(args[1],  13003, True)

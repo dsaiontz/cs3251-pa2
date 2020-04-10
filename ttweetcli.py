@@ -94,6 +94,8 @@ def Main():
         global subscribeWasUsed
         global timelineWasUsed
 
+        #print('Ready for next input')
+
         while True:
             if getUsersWasUsed:
                 responseLength = int(s.recv(3).decode())
@@ -107,8 +109,9 @@ def Main():
                 continue
             responseLength = int(s.recv(3).decode())  #response is entire thing?
             response = s.recv(responseLength).decode()
-            if response != 'Ready for next input':
-                print(response)
+            print(response)
+            #if response == 'Ready for next input':
+                #print(response)
             if response == ('bye bye'):
                 return
             if response != ('Ready for next input'): ###while
@@ -175,6 +178,9 @@ def Main():
                     s.send('005error'.encode())
                     continue
                 s.send((str(commandLen) + command).encode())
+                ########ISSUE HERE SOMEWHERE
+                #s.send(str(commandLen).encode())
+                #s.send(command.encode())
 
             elif len(command) > 9 and command[0: 9] == ('subscribe'):
                 if len(command) < 11:

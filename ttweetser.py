@@ -25,12 +25,14 @@ print('The server is ready to receive')
 s.listen(5)
 
 def threaded_client(connection, user):
+   connection.send('020Ready for next input'.encode())
    while True:
-      connection.send('020Ready for next input'.encode())
+      #connection.send('020Ready for next input'.encode())
       #receive message from client
       try:
          receivedLength = int(connection.recv(3).decode())
          received = str(connection.recv(receivedLength).decode())
+         print("first input gotten")
       except Exception:
          connection.send('020error: cause unknown')
       print('Command: ' + received)
@@ -43,7 +45,7 @@ def threaded_client(connection, user):
          #supposed to get tweet between quotations
          tweetContent = received[received.find('"'):]
          afterMessage = received[received.rfind('"'):]
-         hashtagFull = afterMessage[afterMessage.find('#'):]
+         hashtagFull = tweetContent[tweetContent.rfind('"') + 2:]
          hashtagList = []
          currentHashtag = ''
          i = 0
@@ -61,6 +63,7 @@ def threaded_client(connection, user):
                   hashtagList.append(currentHashtag)
                else:
                   i = i + 1
+         print(hashtagList)
          #process tweet
          tweetContent = user + ' ' + tweetContent
          users[user][0].append(tweetContent)
@@ -71,13 +74,22 @@ def threaded_client(connection, user):
          #send tweet to clients subscribed to each mentioned hashtag
          usersSentTo = []
          for tag in hashtagList:
-            if tag in hashtags:
+            if tag in hashtags.keys():
                for userPerson in hashtags[tag]:
                   if userPerson not in usersSentTo:
                      connectionS = users[userPerson][1] #connection of that user
+                     print(tweetContent)
+                     print("hi")
+                     print(userPerson)
                      connectionS.send(tweetContent.encode())
                      connectionS.send('020Ready for next input'.encode())
+<<<<<<< HEAD
                      usersSentTo.append(userPerson)
+=======
+         connection.send('017operation success'.encode())
+         receivedLength = int(connection.recv(3).decode())
+         received = str(connection.recv(receivedLength).decode())
+>>>>>>> ce13d8fb06edd7dc8da2e2b13227ab12b4316768
          connection.send('020Ready for next input'.encode())
 
 
@@ -133,7 +145,7 @@ def threaded_client(connection, user):
       #timeline command
       elif received == 'timeline':
          connection.send('020Ready for next input'.encode())
-      
+
       elif received == 'error':
          connection.send('020Ready for next input'.encode())
 
